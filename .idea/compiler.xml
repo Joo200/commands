@@ -5,7 +5,6 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel target="16">
-      <module name="acf" target="1.8" />
       <module name="acf-adventure-bungee" target="1.8" />
       <module name="acf-adventure-paper" target="1.8" />
       <module name="acf-brigadier" target="1.8" />

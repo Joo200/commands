@@ -65,7 +65,7 @@ public class BungeeCommandContexts extends CommandContexts<BungeeCommandExecutio
                 colors = colors.filter(color -> finalFilter.equals(ACFUtil.simplifyString(color.name())));
             }
 
-            ChatColor match = ACFUtil.simpleMatch(ChatColor.class, first);
+            ChatColor match = ChatColor.of(first);
             if (match == null) {
                 String valid = colors
                         .map(color -> "<c2>" + ACFUtil.simplifyString(color.name()) + "</c2>")

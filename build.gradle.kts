@@ -21,24 +21,30 @@
  *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.21.0")
+    }
+}
+
 plugins {
-    `java-library`
+    jacoco
 }
 
-applyPlatformAndCoreConfiguration()
-applyCommonArtifactoryConfig()
+logger.lifecycle("""
+*******************************************
+ You are building ACF!
 
-repositories {
-    maven { url = uri("https://hub.spigotmc.org/nexus/content/groups/public") }
-    maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
-}
+ If you encounter trouble:
+ 1) Read CONTRIBUTING.md if you haven't yet
+ 2) Try running 'build' in a separate Gradle run
+ 3) Use gradlew and not gradle
+ 4) If you still need help, ask on Discord!
+*******************************************
+""")
 
-dependencies {
-    compileOnly(project(":acf-core"))
-    api("net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT")
-    api("net.kyori:adventure-api:4.3.0")
-    api("net.kyori:adventure-platform-bungeecord:4.0.0-SNAPSHOT")
-    api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
-}
-
-description = "ACF (Adventure Bungee)"
+applyCommonConfiguration()
+applyRootArtifactoryConfig()
