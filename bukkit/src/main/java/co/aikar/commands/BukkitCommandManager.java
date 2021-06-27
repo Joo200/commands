@@ -89,8 +89,6 @@ public class BukkitCommandManager extends CommandManager<
     protected BukkitLocales locales;
     private boolean cantReadLocale = false;
     protected boolean autoDetectFromClient = true;
-    private boolean adventureAvailable = false;
-    private ACFBukkitAdventureManager adventureManager;
 
     @SuppressWarnings("JavaReflectionMemberAccess")
     public BukkitCommandManager(Plugin plugin) {
@@ -112,13 +110,6 @@ public class BukkitCommandManager extends CommandManager<
         } else {
             this.mcMinorVersion = -1;
             this.mcPatchVersion = -1;
-        }
-
-        try {
-            Class.forName("co.aikar.commands.adventure.adventure.text.Component");
-            adventureAvailable = true;
-        } catch (ClassNotFoundException ignored) {
-            // Ignored
         }
 
         Bukkit.getHelpMap().registerHelpTopicFactory(BukkitRootCommand.class, command -> {
@@ -413,19 +404,5 @@ public class BukkitCommandManager extends CommandManager<
             t = t.getCause();
         }
         return super.handleUncaughtException(scope, registeredCommand, sender, args, t);
-    }
-
-    @Override
-    public void enableUnstableAPI(String api) {
-        super.enableUnstableAPI(api);
-
-        if ("adventure".equals(api) && adventureAvailable) {
-            adventureManager = new ACFBukkitAdventureManager(plugin, this);
-            super.adventureManager = adventureManager;
-        }
-    }
-
-    public @Nullable ACFBukkitAdventureManager getAdventureManager() {
-        return adventureManager;
     }
 }

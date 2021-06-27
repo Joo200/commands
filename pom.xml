@@ -221,7 +221,7 @@
         <module>sponge</module>
         <module>jda</module>
         <module>velocity</module>
-        <module>adventure/bukkit</module>
+        <module>adventure/paper</module>
         <module>adventure/bungee</module>
     </modules>
 </project>

@@ -1,23 +1,17 @@
 package co.aikar.commands;
 
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
-public class ACFBukkitAdventureManager extends ACFAdventureManager<ChatColor> {
-    private BukkitAudiences audiences;
+public class ACFPaperAdventureManager extends ACFAdventureManager<ChatColor> {
     private MiniMessage miniMessage;
 
-    public ACFBukkitAdventureManager(Plugin plugin, CommandManager<?, ?, ? extends ChatColor, ?, ?, ?> manager) {
+    public ACFPaperAdventureManager(Plugin plugin, CommandManager<?, ?, ? extends ChatColor, ?, ?, ?> manager) {
         super(manager);
 
-        this.audiences = BukkitAudiences.create(plugin);
         this.miniMessage = MiniMessage.get();
-
-        CommandContexts<? extends CommandExecutionContext<?, ? extends CommandIssuer>> contexts = manager.getCommandContexts();
-        contexts.registerIssuerOnlyContext(Audience.class, c -> wrapIssuer(c.getIssuer()));
     }
 
     public MiniMessage getMiniMessage() {
@@ -26,10 +20,6 @@ public class ACFBukkitAdventureManager extends ACFAdventureManager<ChatColor> {
 
     public void setMiniMessage(MiniMessage miniMessage) {
         this.miniMessage = miniMessage;
-    }
-
-    private Audience wrapIssuer(CommandIssuer issuer) {
-        return this.audiences.sender(issuer.getIssuer());
     }
 
     @Override
@@ -42,7 +32,8 @@ public class ACFBukkitAdventureManager extends ACFAdventureManager<ChatColor> {
                 message = message.replace("</c" + i + ">", "</color:" + colorname + ">");
             }
         }
-        wrapIssuer(issuer).sendMessage(miniMessage.parse(message));
+        CommandSender sender = issuer.getIssuer();
+        sender.sendMessage(miniMessage.parse(message));
     }
 }
 

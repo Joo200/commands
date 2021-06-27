@@ -24,11 +24,15 @@
 package co.aikar.commands;
 
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("WeakerAccess")
 public class PaperCommandManager extends BukkitCommandManager {
 
     private boolean brigadierAvailable;
+
+    private boolean adventureAvailable = false;
+    private ACFPaperAdventureManager adventureManager;
 
     // If we get anything Paper specific
     public PaperCommandManager(Plugin plugin) {
@@ -45,6 +49,13 @@ public class PaperCommandManager extends BukkitCommandManager {
         } catch (ClassNotFoundException ignored) {
             // Ignored
         }
+
+        try {
+            Class.forName("co.aikar.commands.adventure.adventure.text.Component");
+            adventureAvailable = true;
+        } catch (ClassNotFoundException ignored) {
+            // Ignored
+        }
     }
 
     @Override
@@ -53,6 +64,11 @@ public class PaperCommandManager extends BukkitCommandManager {
 
         if ("brigadier".equals(api) && brigadierAvailable) {
             new PaperBrigadierManager(plugin, this);
+        }
+
+        if ("adventure".equals(api) && adventureAvailable) {
+            adventureManager = new ACFPaperAdventureManager(plugin, this);
+            super.adventureManager = adventureManager;
         }
     }
 
@@ -70,5 +86,9 @@ public class PaperCommandManager extends BukkitCommandManager {
             this.completions = new PaperCommandCompletions(this);
         }
         return this.completions;
+    }
+
+    public @Nullable ACFPaperAdventureManager getAdventureManager() {
+        return adventureManager;
     }
 }
