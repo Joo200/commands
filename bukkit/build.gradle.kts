@@ -11,7 +11,7 @@ description = "ACF (Bukkit)"
 dependencies {
     api(project(":acf-core"))
     implementation("co.aikar:minecraft-timings:1.0.4")
-    compileOnly("org.bukkit:bukkit:1.12-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT")
 }
 
 tasks {

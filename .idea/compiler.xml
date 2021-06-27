@@ -3,26 +3,8 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
-      <profile name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="acf-jda" />
-        <module name="acf-paper" />
-        <module name="example-plugin" />
-        <module name="acf" />
-        <module name="acf-velocity" />
-        <module name="acf-brigadier" />
-        <module name="acf-example" />
-        <module name="acf-bungee" />
-        <module name="acf-sponge" />
-        <module name="acf-adventure-bungee" />
-        <module name="acf-core" />
-        <module name="acf-adventure-paper" />
-        <module name="acf-bukkit" />
-      </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="16">
       <module name="acf" target="1.8" />
       <module name="acf-adventure-bungee" target="1.8" />
       <module name="acf-adventure-paper" target="1.8" />
@@ -33,7 +15,6 @@
       <module name="acf-example" target="1.8" />
       <module name="acf-jda" target="1.8" />
       <module name="acf-paper" target="1.8" />
-      <module name="acf-parent" target="1.8" />
       <module name="acf-sponge" target="1.8" />
       <module name="acf-velocity" target="1.8" />
       <module name="commands" target="1.8" />
@@ -51,6 +32,7 @@
       <module name="acf-jda" options="-parameters" />
       <module name="acf-paper" options="-parameters" />
       <module name="acf-parent" options="" />
+      <module name="acf-parent.acf-adventure-paper" options="-parameters" />
       <module name="acf-sponge" options="-parameters" />
       <module name="acf-velocity" options="-parameters" />
       <module name="example-plugin" options="-parameters" />

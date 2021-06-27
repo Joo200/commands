@@ -36,6 +36,7 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Values;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -84,9 +85,13 @@ public class SomeCommand extends BaseCommand {
     }
 
     @Subcommand("condition")
-    @Conditions("condition=1")
+    //@Conditions("condition=1")
     public void onCondition(CommandSender sender) {
-
+        if (Bukkit.getServer().getGenerateStructures()) {
+            sender.sendMessage("True");
+        } else {
+            sender.sendMessage("False");
+        }
     }
 
     // /acf admin - requires permission some.perm

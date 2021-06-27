@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     api(project(":acf-core"))
+    compileOnly(project(":acf-adventure-bungee"))
     compileOnly("net.md-5:bungeecord-api:1.14-SNAPSHOT")
 }
 

@@ -9,8 +9,9 @@ plugins {
 dependencies {
     api(project(":acf-bukkit"))
     api(project(":acf-brigadier"))
-    compileOnly("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT")
-    compileOnly("com.destroystokyo.paper:paper-mojangapi:1.15.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-mojangapi:1.17-R0.1-SNAPSHOT")
+    compileOnly(project(":acf-adventure-paper"))
 }
 
 description = "ACF (Paper)"

@@ -54,7 +54,6 @@ dependencies {
 
 group = "co.aikar"
 version = "0.5.0-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 java {
     withSourcesJar()
