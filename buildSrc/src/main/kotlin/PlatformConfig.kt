@@ -1,4 +1,5 @@
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.compile.JavaCompile
@@ -43,6 +44,9 @@ fun Project.applyPlatformAndCoreConfiguration() {
         "testImplementation"("com.google.guava:guava:15.0")
     }
 
+    the<JavaPluginExtension>().withSourcesJar()
+    //the<JavaPluginExtension>().withJavadocJar()
+
     configure<PublishingExtension> {
         publications {
             register<MavenPublication>("maven") {
@@ -54,6 +58,7 @@ fun Project.applyPlatformAndCoreConfiguration() {
                         fromResolutionResult()
                     }
                 }
+                from(components["java"])
             }
         }
     }
