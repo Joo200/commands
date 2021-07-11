@@ -35,7 +35,7 @@ import java.util.Set;
 import static co.aikar.commands.BaseCommand.CATCHUNKNOWN;
 import static co.aikar.commands.BaseCommand.DEFAULT;
 
-class CommandRouter {
+public class CommandRouter {
 
     private final CommandManager manager;
 
@@ -43,7 +43,7 @@ class CommandRouter {
         this.manager = manager;
     }
 
-    CommandRouteResult matchCommand(RouteSearch search, boolean completion) {
+    public CommandRouteResult matchCommand(RouteSearch search, boolean completion) {
         Set<RegisteredCommand> cmds = search.commands;
         String[] args = search.args;
         if (!cmds.isEmpty()) {
@@ -82,7 +82,7 @@ class CommandRouter {
         return args.length <= required + optional && (completion || args.length >= required);
     }
 
-    RouteSearch routeCommand(RootCommand command, String commandLabel, String[] args, boolean completion) {
+    public RouteSearch routeCommand(RootCommand command, String commandLabel, String[] args, boolean completion) {
         SetMultimap<String, RegisteredCommand> subCommands = command.getSubCommands();
         int argLength = args.length;
         for (int i = argLength; i >= 0; i--) {
@@ -124,26 +124,41 @@ class CommandRouter {
         return null;
     }
 
-    static class CommandRouteResult {
-        final RegisteredCommand cmd;
+    public static class CommandRouteResult {
+        final RegisteredCommand<?> cmd;
         final String[] args;
         final String commandLabel;
         final String subcommand;
 
-        CommandRouteResult(RegisteredCommand cmd, RouteSearch search) {
+        CommandRouteResult(RegisteredCommand<?> cmd, RouteSearch search) {
             this(cmd, search.args, search.subcommand, search.commandLabel);
         }
 
-        CommandRouteResult(RegisteredCommand cmd, String[] args, String subcommand, String commandLabel) {
+        CommandRouteResult(RegisteredCommand<?> cmd, String[] args, String subcommand, String commandLabel) {
             this.cmd = cmd;
             this.args = args;
             this.commandLabel = commandLabel;
             this.subcommand = subcommand;
         }
 
+        public RegisteredCommand<?> getCmd() {
+            return cmd;
+        }
+
+        public String getSubcommand() {
+            return subcommand;
+        }
+
+        public String[] getArgs() {
+            return args;
+        }
+
+        public String getCommandLabel() {
+            return commandLabel;
+        }
     }
 
-    static class RouteSearch {
+    public static class RouteSearch {
         final String[] args;
         final Set<RegisteredCommand> commands;
         final String commandLabel;

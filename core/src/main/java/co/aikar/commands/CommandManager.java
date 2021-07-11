@@ -236,7 +236,7 @@ public abstract class CommandManager<
         return helpFormatter;
     }
 
-    CommandRouter getRouter() {
+    public CommandRouter getRouter() {
         return router;
     }
 
@@ -588,7 +588,7 @@ public abstract class CommandManager<
         return unstableAPIs.contains(api);
     }
 
-    Annotations getAnnotations() {
+    public Annotations getAnnotations() {
         return annotations;
     }
 

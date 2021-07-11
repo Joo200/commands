@@ -506,7 +506,7 @@ public abstract class BaseCommand {
         }
     }
 
-    void execute(CommandIssuer issuer, CommandRouter.CommandRouteResult command) {
+    public void execute(CommandIssuer issuer, CommandRouter.CommandRouteResult command) {
         try {
             CommandOperationContext commandContext = preCommandOperation(issuer, command.commandLabel, command.args, false);
             execSubcommand = command.subcommand;

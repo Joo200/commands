@@ -27,7 +27,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.regex.Pattern;
 
-abstract class AnnotationLookups {
+public abstract class AnnotationLookups {
 
     /**
      * This checks whether the {@link AnnotatedElement} given has an annotation of the type given as annoClass.
@@ -43,7 +43,7 @@ abstract class AnnotationLookups {
      *
      * @see #hasAnnotation(AnnotatedElement, Class, boolean)
      */
-    boolean hasAnnotation(AnnotatedElement object, Class<? extends Annotation> annoClass) {
+    public boolean hasAnnotation(AnnotatedElement object, Class<? extends Annotation> annoClass) {
         return getAnnotationValue(object, annoClass, Annotations.NOTHING) != null;
     }
 
@@ -60,7 +60,7 @@ abstract class AnnotationLookups {
      *
      * @return Whether an annotation of annoClass is attached to element, and if allowEmpty is false, whether it has a value.
      */
-    boolean hasAnnotation(AnnotatedElement object, Class<? extends Annotation> annoClass, boolean allowEmpty) {
+    public boolean hasAnnotation(AnnotatedElement object, Class<? extends Annotation> annoClass, boolean allowEmpty) {
         return getAnnotationValue(object, annoClass, Annotations.NOTHING | (allowEmpty ? 0 : Annotations.NO_EMPTY)) != null;
     }
 
@@ -77,7 +77,7 @@ abstract class AnnotationLookups {
      *
      * @see #getAnnotationValues(AnnotatedElement, Class, Pattern, int)
      */
-    String[] getAnnotationValues(AnnotatedElement object, Class<? extends Annotation> annoClass) {
+    public String[] getAnnotationValues(AnnotatedElement object, Class<? extends Annotation> annoClass) {
         return getAnnotationValues(object, annoClass, ACFPatterns.PIPE, Annotations.REPLACEMENTS);
     }
 
@@ -96,7 +96,7 @@ abstract class AnnotationLookups {
      *
      * @see #getAnnotationValues(AnnotatedElement, Class, Pattern, int)
      */
-    String[] getAnnotationValues(AnnotatedElement object, Class<? extends Annotation> annoClass, Pattern pattern) {
+    public String[] getAnnotationValues(AnnotatedElement object, Class<? extends Annotation> annoClass, Pattern pattern) {
         return getAnnotationValues(object, annoClass, pattern, Annotations.REPLACEMENTS);
     }
 
@@ -115,7 +115,7 @@ abstract class AnnotationLookups {
      *
      * @see #getAnnotationValues(AnnotatedElement, Class, Pattern, int)
      */
-    String[] getAnnotationValues(AnnotatedElement object, Class<? extends Annotation> annoClass, int options) {
+    public String[] getAnnotationValues(AnnotatedElement object, Class<? extends Annotation> annoClass, int options) {
         return getAnnotationValues(object, annoClass, ACFPatterns.PIPE, options);
     }
 
@@ -134,7 +134,7 @@ abstract class AnnotationLookups {
      *
      * @return All the values of annoClass on the object split by the pattern given. Nullability depends on options.
      */
-    String[] getAnnotationValues(AnnotatedElement object, Class<? extends Annotation> annoClass, Pattern pattern, int options) {
+    public String[] getAnnotationValues(AnnotatedElement object, Class<? extends Annotation> annoClass, Pattern pattern, int options) {
         String value = getAnnotationValue(object, annoClass, options);
         if (value == null) {
             return null;
@@ -152,7 +152,7 @@ abstract class AnnotationLookups {
      *
      * @return The value of the annotation on the object given.
      */
-    String getAnnotationValue(AnnotatedElement object, Class<? extends Annotation> annoClass) {
+    public String getAnnotationValue(AnnotatedElement object, Class<? extends Annotation> annoClass) {
         return getAnnotationValue(object, annoClass, Annotations.REPLACEMENTS);
     }
 
@@ -169,9 +169,9 @@ abstract class AnnotationLookups {
      *
      * @return The value of the annotation on the object given. Nullability depends on options.
      */
-    abstract String getAnnotationValue(AnnotatedElement object, Class<? extends Annotation> annoClass, int options);
+    public abstract String getAnnotationValue(AnnotatedElement object, Class<? extends Annotation> annoClass, int options);
 
-    <T extends Annotation> T getAnnotationFromClass(Class<?> clazz, Class<T> annoClass) {
+    public <T extends Annotation> T getAnnotationFromClass(Class<?> clazz, Class<T> annoClass) {
         while (clazz != null && BaseCommand.class.isAssignableFrom(clazz)) {
             T annotation = clazz.getAnnotation(annoClass);
             if (annotation != null) {

@@ -33,7 +33,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 @SuppressWarnings("TypeParameterExplicitlyExtendsObject")
-class Annotations <M extends CommandManager> extends AnnotationLookups {
+public class Annotations <M extends CommandManager> extends AnnotationLookups {
 
     public static final int NOTHING = 0;
     public static final int REPLACEMENTS = 1;
@@ -51,7 +51,7 @@ class Annotations <M extends CommandManager> extends AnnotationLookups {
         this.manager = manager;
     }
 
-    String getAnnotationValue(AnnotatedElement object, Class<? extends Annotation> annoClass, int options) {
+    public String getAnnotationValue(AnnotatedElement object, Class<? extends Annotation> annoClass, int options) {
         Annotation annotation = getAnnotationRecursive(object, annoClass, new HashSet<>());
         String value = null;
 
