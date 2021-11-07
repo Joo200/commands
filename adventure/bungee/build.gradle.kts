@@ -37,7 +37,7 @@ dependencies {
     compileOnly(project(":acf-core"))
     api("net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT")
     api("net.kyori:adventure-api:4.3.0")
-    api("net.kyori:adventure-platform-bungeecord:4.0.0-SNAPSHOT")
+    api("net.kyori:adventure-platform-bungeecord:4.0.0")
     api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
 }
 
