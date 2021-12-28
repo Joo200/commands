@@ -58,6 +58,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -87,10 +89,10 @@ public class BukkitCommandManager extends CommandManager<
     protected BukkitCommandCompletions completions;
     MCTiming commandTiming;
     protected BukkitLocales locales;
+    protected Map<UUID, String> issuersLocaleString = new ConcurrentHashMap<>();
     private boolean cantReadLocale = false;
     protected boolean autoDetectFromClient = true;
 
-    @SuppressWarnings("JavaReflectionMemberAccess")
     public BukkitCommandManager(Plugin plugin) {
         this.plugin = plugin;
         String prefix = this.plugin.getDescription().getPrefix();
@@ -128,7 +130,7 @@ public class BukkitCommandManager extends CommandManager<
                 return;
             }
             Bukkit.getOnlinePlayers().forEach(this::readPlayerLocale);
-        }, 5, 5);
+        }, 30, 30);
 
         registerDependency(plugin.getClass(), plugin);
         registerDependency(Logger.class, plugin.getLogger());
@@ -317,11 +319,15 @@ public class BukkitCommandManager extends CommandManager<
                 localeField.setAccessible(true);
                 Object localeString = localeField.get(nmsPlayer);
                 if (localeString instanceof String) {
-                    String[] split = ACFPatterns.UNDERSCORE.split((String) localeString);
-                    Locale locale = split.length > 1 ? new Locale(split[0], split[1]) : new Locale(split[0]);
-                    Locale prev = issuersLocale.put(player.getUniqueId(), locale);
-                    if (!Objects.equals(locale, prev)) {
-                        this.notifyLocaleChange(getCommandIssuer(player), prev, locale);
+                    UUID playerUniqueId = player.getUniqueId();
+                    if (!localeString.equals(issuersLocaleString.get(playerUniqueId))) {
+                        String[] split = ACFPatterns.UNDERSCORE.split((String) localeString);
+                        Locale locale = split.length > 1 ? new Locale(split[0], split[1]) : new Locale(split[0]);
+                        Locale prev = issuersLocale.put(playerUniqueId, locale);
+                        issuersLocaleString.put(playerUniqueId, (String) localeString);
+                        if (!Objects.equals(locale, prev)) {
+                            this.notifyLocaleChange(getCommandIssuer(player), prev, locale);
+                        }
                     }
                 }
             }

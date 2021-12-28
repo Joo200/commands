@@ -466,11 +466,17 @@ public final class ACFUtil {
 
 
     public static Number parseNumber(String num, boolean suffixes) {
-        ApplyModifierToNumber applyModifierToNumber = new ApplyModifierToNumber(num, suffixes).invoke();
-        num = applyModifierToNumber.getNum();
-        double mod = applyModifierToNumber.getMod();
+        if (ACFPatterns.getPattern("^0x([0-9A-Fa-f]*)$").matcher(num).matches()) {
+            return Long.parseLong(num.substring(2), 16);
+        } else if (ACFPatterns.getPattern("^0b([01]*)$").matcher(num).matches()) {
+            return Long.parseLong(num.substring(2), 2);
+        } else {
+            ApplyModifierToNumber applyModifierToNumber = new ApplyModifierToNumber(num, suffixes).invoke();
+            num = applyModifierToNumber.getNum();
+            double mod = applyModifierToNumber.getMod();
 
-        return Double.parseDouble(num) * mod;
+            return Double.parseDouble(num) * mod;
+        }
     }
 
     public static BigDecimal parseBigNumber(String num, boolean suffixes) {
@@ -570,7 +576,6 @@ public final class ACFUtil {
 
     public static boolean isFloat(String string) {
         try {
-            //noinspection ResultOfMethodCallIgnored
             Float.parseFloat(string);
             return true;
         } catch (Exception e) {
@@ -580,7 +585,6 @@ public final class ACFUtil {
 
     public static boolean isDouble(String string) {
         try {
-            //noinspection ResultOfMethodCallIgnored
             Double.parseDouble(string);
             return true;
         } catch (Exception e) {
@@ -604,7 +608,7 @@ public final class ACFUtil {
     }
 
     private static <T extends Throwable> T superSneaky(Throwable t) throws T {
-        //noinspection ConstantConditions,unchecked
+        // noinspection unchecked
         throw (T) t;
     }
 
