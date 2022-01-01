@@ -38,8 +38,6 @@ import java.util.logging.Logger;
 public class TestCommandManager extends CommandManager<
         TestCommandSender,
         TestCommandIssuer,
-        String,
-        MessageFormatter<String>,
         TestCommandExecutionContext,
         TestConditionContext> {
 

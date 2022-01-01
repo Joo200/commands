@@ -69,8 +69,6 @@ import java.util.regex.Pattern;
 public class BukkitCommandManager extends CommandManager<
         CommandSender,
         BukkitCommandIssuer,
-        ChatColor,
-        BukkitMessageFormatter,
         BukkitCommandExecutionContext,
         BukkitConditionContext
         > {
@@ -100,10 +98,6 @@ public class BukkitCommandManager extends CommandManager<
         this.timingManager = TimingManager.of(plugin);
         this.commandTiming = this.timingManager.of("Commands");
         this.commandMap = hookCommandMap();
-        this.formatters.put(MessageType.ERROR, defaultFormatter = new BukkitMessageFormatter(ChatColor.RED, ChatColor.YELLOW, ChatColor.RED));
-        this.formatters.put(MessageType.SYNTAX, new BukkitMessageFormatter(ChatColor.YELLOW, ChatColor.GREEN, ChatColor.WHITE));
-        this.formatters.put(MessageType.INFO, new BukkitMessageFormatter(ChatColor.BLUE, ChatColor.DARK_GREEN, ChatColor.GREEN));
-        this.formatters.put(MessageType.HELP, new BukkitMessageFormatter(ChatColor.AQUA, ChatColor.GREEN, ChatColor.YELLOW));
         Pattern versionPattern = Pattern.compile("\\(MC: (\\d)\\.(\\d+)\\.?(\\d+?)?\\)");
         Matcher matcher = versionPattern.matcher(Bukkit.getVersion());
         if (matcher.find()) {
@@ -288,7 +282,7 @@ public class BukkitCommandManager extends CommandManager<
 
 
     private Field getEntityField(Player player) throws NoSuchFieldException {
-        Class cls = player.getClass();
+        Class<?> cls = player.getClass();
         while (cls != Object.class) {
             if (cls.getName().endsWith("CraftEntity")) {
                 Field field = cls.getDeclaredField("entity");

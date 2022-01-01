@@ -68,4 +68,16 @@ public class InvalidCommandArgument extends RuntimeException {
         this.replacements = null;
         this.key = null;
     }
+
+    public MessageKey getKey() {
+        return key;
+    }
+
+    public String[] getReplacements() {
+        return replacements;
+    }
+
+    public boolean isShowSyntax() {
+        return showSyntax;
+    }
 }

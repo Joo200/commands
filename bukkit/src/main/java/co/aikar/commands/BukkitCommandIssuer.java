@@ -23,6 +23,7 @@
 
 package co.aikar.commands;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +47,11 @@ public class BukkitCommandIssuer implements CommandIssuer {
     }
 
     @Override
+    public void sendMessage(Component component) {
+        sender.sendMessage(component);
+    }
+
+    @Override
     public CommandSender getIssuer() {
         return sender;
     }
@@ -65,13 +71,8 @@ public class BukkitCommandIssuer implements CommandIssuer {
     }
 
     @Override
-    public CommandManager getManager() {
+    public CommandManager<?,?,?,?> getManager() {
         return manager;
-    }
-
-    @Override
-    public void sendMessageInternal(String message) {
-        sender.sendMessage(ACFBukkitUtil.color(message));
     }
 
     @Override

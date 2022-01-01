@@ -78,10 +78,7 @@ public class CommandHelpFormatter {
     }
 
     public void printHelpCommand(CommandHelp help, CommandIssuer issuer, HelpEntry entry) {
-        String formatted = this.manager.formatMessage(issuer, MessageType.HELP, MessageKeys.HELP_FORMAT, getEntryFormatReplacements(help, entry));
-        for (String msg : ACFPatterns.NEWLINE.split(formatted)) {
-            issuer.sendMessageInternal(ACFUtil.rtrim(msg));
-        }
+        this.manager.sendMessage(issuer, MessageType.HELP, MessageKeys.HELP_FORMAT, getEntryFormatReplacements(help, entry));
     }
 
     public void printHelpFooter(CommandHelp help, CommandIssuer issuer) {
@@ -100,10 +97,7 @@ public class CommandHelpFormatter {
     }
 
     public void printSearchEntry(CommandHelp help, CommandIssuer issuer, HelpEntry page) {
-        String formatted = this.manager.formatMessage(issuer, MessageType.HELP, MessageKeys.HELP_FORMAT, getEntryFormatReplacements(help, page));
-        for (String msg : ACFPatterns.NEWLINE.split(formatted)) {
-            issuer.sendMessageInternal(ACFUtil.rtrim(msg));
-        }
+        this.manager.sendMessage(issuer, MessageType.HELP, MessageKeys.HELP_FORMAT, getEntryFormatReplacements(help, page));
     }
 
     public void printSearchFooter(CommandHelp help, CommandIssuer issuer) {
@@ -127,17 +121,11 @@ public class CommandHelpFormatter {
 
 
     public void printDetailedHelpCommand(CommandHelp help, CommandIssuer issuer, HelpEntry entry) {
-        String formatted = this.manager.formatMessage(issuer, MessageType.HELP, MessageKeys.HELP_DETAILED_COMMAND_FORMAT, getEntryFormatReplacements(help, entry));
-        for (String msg : ACFPatterns.NEWLINE.split(formatted)) {
-            issuer.sendMessageInternal(ACFUtil.rtrim(msg));
-        }
+        this.manager.sendMessage(issuer, MessageType.HELP, MessageKeys.HELP_DETAILED_COMMAND_FORMAT, getEntryFormatReplacements(help, entry));
     }
 
     public void printDetailedParameter(CommandHelp help, CommandIssuer issuer, HelpEntry entry, CommandParameter param) {
-        String formattedMsg = this.manager.formatMessage(issuer, MessageType.HELP, MessageKeys.HELP_DETAILED_PARAMETER_FORMAT, getParameterFormatReplacements(help, param, entry));
-        for (String msg : ACFPatterns.NEWLINE.split(formattedMsg)) {
-            issuer.sendMessageInternal(ACFUtil.rtrim(msg));
-        }
+        this.manager.sendMessage(issuer, MessageType.HELP, MessageKeys.HELP_DETAILED_PARAMETER_FORMAT, getParameterFormatReplacements(help, param, entry));
     }
 
     public void printDetailedHelpFooter(CommandHelp help, CommandIssuer issuer, HelpEntry entry) {

@@ -119,7 +119,7 @@ public abstract class BaseCommand {
     /**
      * The manager this is registered to
      */
-    CommandManager<?, ?, ?, ?, ?, ?> manager = null;
+    CommandManager<?, ?, ?, ?> manager = null;
 
     /**
      * The command which owns this. This may be null if there are no owners.

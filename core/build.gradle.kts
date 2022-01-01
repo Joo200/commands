@@ -40,6 +40,9 @@ dependencies {
     implementation("co.aikar:locales:1.0-SNAPSHOT")
     implementation("net.jodah:expiringmap:0.5.9")
 
+    api("net.kyori:adventure-text-minimessage:${Versions.ADVENTURE}")
+    api("net.kyori:adventure-api:${Versions.ADVENTURE}")
+
 }
 
 tasks {

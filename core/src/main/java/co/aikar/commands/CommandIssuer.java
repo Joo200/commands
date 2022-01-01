@@ -25,6 +25,7 @@ package co.aikar.commands;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -37,7 +38,7 @@ public interface CommandIssuer {
      */
     <T> T getIssuer();
 
-    CommandManager getManager();
+    CommandManager<?,?,?,?> getManager();
 
     /**
      * Is this issue a player, or server/console sender
@@ -52,6 +53,13 @@ public interface CommandIssuer {
     default void sendMessage(String message) {
         getManager().sendMessage(this, MessageType.INFO, MessageKeys.INFO_MESSAGE, "{message}", message);
     }
+
+    /**
+     * Send the component to the issur
+     *
+     * @param component the message
+     */
+    void sendMessage(Component component);
 
     /**
      * @return the unique id of that issuer
@@ -89,11 +97,4 @@ public interface CommandIssuer {
     default void sendMessage(MessageType type, MessageKey key, String... replacements) {
         getManager().sendMessage(this, type, key, replacements);
     }
-
-    /**
-     * @deprecated Do not call this, for internal use. Not considered part of the API and may break.
-     * @param message
-     */
-    @Deprecated
-    void sendMessageInternal(String message);
 }

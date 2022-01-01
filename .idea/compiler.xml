@@ -4,7 +4,7 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
-    <bytecodeTargetLevel target="16">
+    <bytecodeTargetLevel target="17">
       <module name="acf-adventure-bungee" target="1.8" />
       <module name="acf-adventure-paper" target="1.8" />
       <module name="acf-brigadier" target="1.8" />
@@ -16,8 +16,24 @@
       <module name="acf-paper" target="1.8" />
       <module name="acf-sponge" target="1.8" />
       <module name="acf-velocity" target="1.8" />
+      <module name="acf.acf-adventure-velocity.main" target="1.8" />
+      <module name="acf.acf-adventure-velocity.test" target="1.8" />
+      <module name="brigadier.acf.acf-brigadier.main" target="1.8" />
+      <module name="brigadier.acf.acf-brigadier.test" target="1.8" />
+      <module name="bungee.acf.acf-adventure-bungee.main" target="1.8" />
+      <module name="bungee.acf.acf-adventure-bungee.test" target="1.8" />
+      <module name="bungee.acf.acf-bungee.main" target="1.8" />
+      <module name="bungee.acf.acf-bungee.test" target="1.8" />
       <module name="commands" target="1.8" />
       <module name="example-plugin" target="1.8" />
+      <module name="jda.acf.acf-jda.main" target="1.8" />
+      <module name="jda.acf.acf-jda.test" target="1.8" />
+      <module name="paper.acf.acf-adventure-paper.main" target="1.8" />
+      <module name="paper.acf.acf-adventure-paper.test" target="1.8" />
+      <module name="paper.acf.acf-paper.main" target="1.8" />
+      <module name="paper.acf.acf-paper.test" target="1.8" />
+      <module name="sponge.acf.acf-sponge.main" target="1.8" />
+      <module name="sponge.acf.acf-sponge.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

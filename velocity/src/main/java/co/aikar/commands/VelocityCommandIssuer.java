@@ -25,6 +25,7 @@ package co.aikar.commands;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -60,6 +61,11 @@ public class VelocityCommandIssuer implements CommandIssuer {
     }
 
     @Override
+    public void sendMessage(Component component) {
+        source.sendMessage(component);
+    }
+
+    @Override
     public @NotNull UUID getUniqueId() {
         if (isPlayer()) {
             return ((Player) source).getUniqueId();
@@ -68,11 +74,6 @@ public class VelocityCommandIssuer implements CommandIssuer {
         // TODO: Find a better solution for this
         //generate a unique id based of the name (like for the console command sender)
         return UUID.randomUUID();
-    }
-
-    @Override
-    public void sendMessageInternal(String message) {
-        source.sendMessage(ACFVelocityUtil.color(message));
     }
 
     @Override

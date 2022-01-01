@@ -23,6 +23,7 @@
 
 package co.aikar.commands;
 
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -53,6 +54,11 @@ public class TestCommandIssuer implements CommandIssuer {
     }
 
     @Override
+    public void sendMessage(Component component) {
+        issuer.sendMessage(component.toString());
+    }
+
+    @Override
     public @NotNull UUID getUniqueId() {
         return issuer.getUuid();
     }
@@ -60,10 +66,5 @@ public class TestCommandIssuer implements CommandIssuer {
     @Override
     public boolean hasPermission(String permission) {
         return issuer.hasPermission(permission);
-    }
-
-    @Override
-    public void sendMessageInternal(String message) {
-        issuer.sendMessage(message);
     }
 }

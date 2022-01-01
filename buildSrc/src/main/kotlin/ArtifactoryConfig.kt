@@ -19,8 +19,8 @@ fun Project.applyRootArtifactoryConfig() {
         setContextUrl("${project.property(ARTIFACTORY_CONTEXT_URL)}")
         clientConfig.publisher.run {
             repoKey = when {
-                "${project.version}".contains("SNAPSHOT") -> "libs-snapshot-local"
-                else -> "libs-release-local"
+                "${project.version}".contains("SNAPSHOT") -> "public"
+                else -> "public"
             }
             username = "${project.property(ARTIFACTORY_USER)}"
             password = "${project.property(ARTIFACTORY_PASSWORD)}"

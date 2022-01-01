@@ -24,9 +24,17 @@
 package co.aikar.commands;
 
 import co.aikar.commands.annotation.Dependency;
+import co.aikar.commands.format.MessageFormatter;
 import co.aikar.locales.MessageKeyProvider;
 import co.aikar.util.Table;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.placeholder.Replacement;
+import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -51,8 +59,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class CommandManager<
         IT,
         I extends CommandIssuer,
-        FT,
-        MF extends MessageFormatter<FT>,
         CEC extends CommandExecutionContext<CEC, I>,
         CC extends ConditionContext<I>
         > {
@@ -70,7 +76,6 @@ public abstract class CommandManager<
     protected final CommandReplacements replacements = new CommandReplacements(this);
     protected final CommandConditions<I, CEC, CC> conditions = new CommandConditions<>(this);
     protected ExceptionHandler defaultExceptionHandler = null;
-    protected ACFAdventureManager<FT> adventureManager;
     boolean logUnhandledExceptions = true;
     protected Table<Class<?>, String, Object> dependencies = new Table<>();
     protected CommandHelpFormatter helpFormatter = new CommandHelpFormatter(this);
@@ -78,9 +83,10 @@ public abstract class CommandManager<
     protected boolean usePerIssuerLocale = false;
     protected List<IssuerLocaleChangedCallback<I>> localeChangedCallbacks = new ArrayList<>();
     protected Set<Locale> supportedLanguages = new HashSet<>(Arrays.asList(Locales.ENGLISH, Locales.DUTCH, Locales.GERMAN, Locales.SPANISH, Locales.FRENCH, Locales.CZECH, Locales.PORTUGUESE, Locales.SWEDISH, Locales.NORWEGIAN_BOKMAAL, Locales.NORWEGIAN_NYNORSK, Locales.RUSSIAN, Locales.BULGARIAN, Locales.HUNGARIAN, Locales.TURKISH, Locales.JAPANESE, Locales.CHINESE, Locales.SIMPLIFIED_CHINESE, Locales.TRADITIONAL_CHINESE));
-    protected Map<MessageType, MF> formatters = new IdentityHashMap<>();
-    protected MF defaultFormatter;
+
     protected int defaultHelpPerPage = 10;
+
+    private MiniMessage miniMessage = MiniMessage.miniMessage();
 
     protected Map<UUID, Locale> issuersLocale = new ConcurrentHashMap<>();
 
@@ -88,6 +94,17 @@ public abstract class CommandManager<
 
     private Annotations annotations = new Annotations<>(this);
     private CommandRouter router = new CommandRouter(this);
+
+    private TransformationRegistry defaultFormatter;
+    private Map<MessageType, TransformationRegistry> formatters = new HashMap<>();
+
+    public CommandManager() {
+        defaultFormatter = MessageFormatter.getRegistryOf(MessageFormatter.INFO_REPLACEMENTS);
+        formatters.put(MessageType.INFO, defaultFormatter);
+        formatters.put(MessageType.ERROR, MessageFormatter.getRegistryOf(MessageFormatter.ERROR_REPLACEMENTS));
+        formatters.put(MessageType.SYNTAX, MessageFormatter.getRegistryOf(MessageFormatter.SYNTAX_REPLACEMENTS));
+        formatters.put(MessageType.HELP, MessageFormatter.getRegistryOf(MessageFormatter.HELP_REPLACEMENTS));
+    }
 
     public static CommandOperationContext getCurrentCommandOperationContext() {
         return commandOperationContext.get().peek();
@@ -103,31 +120,19 @@ public abstract class CommandManager<
         return context != null ? context.getCommandManager() : null;
     }
 
-    public MF setFormat(MessageType type, MF formatter) {
-        return formatters.put(type, formatter);
+    public void setFormat(MessageType type, TransformationRegistry formatter) {
+        formatters.put(type, formatter);
     }
 
-    public MF getFormat(MessageType type) {
+    public TransformationRegistry getFormat(MessageType type) {
         return formatters.getOrDefault(type, defaultFormatter);
     }
 
-    public void setFormat(MessageType type, FT... colors) {
-        MF format = getFormat(type);
-        for (int i = 1; i <= colors.length; i++) {
-            format.setColor(i, colors[i - 1]);
-        }
-    }
-
-    public void setFormat(MessageType type, int i, FT color) {
-        MF format = getFormat(type);
-        format.setColor(i, color);
-    }
-
-    public MF getDefaultFormatter() {
+    public TransformationRegistry getDefaultFormatter() {
         return defaultFormatter;
     }
 
-    public void setDefaultFormatter(MF defaultFormatter) {
+    public void setDefaultFormatter(TransformationRegistry defaultFormatter) {
         this.defaultFormatter = defaultFormatter;
     }
 
@@ -397,19 +402,11 @@ public abstract class CommandManager<
     }
 
     public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String... replacements) {
-        if (hasUnstableAPI("adventure") && adventureManager != null) {
-            String message = getAndReplaceMessage(issuer, key, replacements);
-            for (String msg : ACFPatterns.NEWLINE.split(message)) {
-                MF formatter = formatters.getOrDefault(type, defaultFormatter);
-                adventureManager.sendMessage(issuer, formatter, msg);
-            }
-        } else {
-            String message = formatMessage(issuer, type, key, replacements);
-            for (String msg : ACFPatterns.NEWLINE.split(message)) {
-                issuer.sendMessageInternal(ACFUtil.rtrim(msg));
-            }
+        String message = getAndReplaceMessage(issuer, key, replacements);
+        for (String msg : ACFPatterns.NEWLINE.split(message)) {
+            MiniMessage build = miniMessage.toBuilder().transformations(formatters.getOrDefault(type, defaultFormatter)).build();
+            issuer.sendMessage(build.parse(msg));
         }
-
     }
 
     public String getAndReplaceMessage(CommandIssuer issuer, MessageKeyProvider key, String... replacements) {
@@ -420,16 +417,6 @@ public abstract class CommandManager<
 
         message = getCommandReplacements().replace(message);
         message = getLocales().replaceI18NStrings(message);
-        return message;
-    }
-
-    public String formatMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String... replacements) {
-        String message = getAndReplaceMessage(issuer, key, replacements);
-
-        MF formatter = formatters.getOrDefault(type, defaultFormatter);
-        if (formatter != null) {
-            message = formatter.format(message);
-        }
         return message;
     }
 

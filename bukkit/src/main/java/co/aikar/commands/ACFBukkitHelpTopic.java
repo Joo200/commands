@@ -23,6 +23,8 @@
 
 package co.aikar.commands;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.help.GenericCommandHelpTopic;
 
@@ -37,8 +39,8 @@ public class ACFBukkitHelpTopic extends GenericCommandHelpTopic {
         List<String> messages = new ArrayList<>();
         BukkitCommandIssuer captureIssuer = new BukkitCommandIssuer(manager, Bukkit.getConsoleSender()) {
             @Override
-            public void sendMessageInternal(String message) {
-                messages.add(message);
+            public void sendMessage(Component component) {
+                messages.add(LegacyComponentSerializer.builder().build().serialize(component));
             }
         };
         manager.generateCommandHelp(captureIssuer, command).showHelp(captureIssuer);

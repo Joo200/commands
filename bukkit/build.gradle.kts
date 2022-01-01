@@ -31,14 +31,18 @@ applyCommonArtifactoryConfig()
 description = "ACF (Bukkit)"
 
 repositories {
-    maven { url = uri("https://hub.spigotmc.org/nexus/content/groups/public") }
     maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
+    maven { url = uri("https://libraries.minecraft.net") }
+    maven { url = uri("https://libraries.minecraft.net") }
 }
 
 dependencies {
     api(project(":acf-core"))
     implementation("co.aikar:minecraft-timings:1.0.4")
-    compileOnly("org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:${Versions.PAPER}")
+    compileOnly("io.papermc.paper:paper-mojangapi:${Versions.PAPER}")
+    api("net.kyori:adventure-text-minimessage:${Versions.ADVENTURE}")
+    compileOnly("com.mojang:brigadier:1.0.17")
 }
 
 tasks {
