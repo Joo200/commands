@@ -403,8 +403,8 @@ public abstract class CommandManager<
 
     public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String... replacements) {
         String message = getAndReplaceMessage(issuer, key, replacements);
+        MiniMessage build = miniMessage.toBuilder().transformations(formatters.getOrDefault(type, defaultFormatter)).build();
         for (String msg : ACFPatterns.NEWLINE.split(message)) {
-            MiniMessage build = miniMessage.toBuilder().transformations(formatters.getOrDefault(type, defaultFormatter)).build();
             issuer.sendMessage(build.parse(msg));
         }
     }

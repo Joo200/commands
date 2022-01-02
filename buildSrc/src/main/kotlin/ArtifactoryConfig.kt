@@ -18,10 +18,7 @@ fun Project.applyRootArtifactoryConfig() {
     configure<ArtifactoryPluginConvention> {
         setContextUrl("${project.property(ARTIFACTORY_CONTEXT_URL)}")
         clientConfig.publisher.run {
-            repoKey = when {
-                "${project.version}".contains("SNAPSHOT") -> "public"
-                else -> "public"
-            }
+            repoKey = "public"
             username = "${project.property(ARTIFACTORY_USER)}"
             password = "${project.property(ARTIFACTORY_PASSWORD)}"
             isMaven = true
