@@ -405,7 +405,7 @@ public abstract class CommandManager<
         String message = getAndReplaceMessage(issuer, key, replacements);
         MiniMessage build = miniMessage.toBuilder().transformations(formatters.getOrDefault(type, defaultFormatter)).build();
         for (String msg : ACFPatterns.NEWLINE.split(message)) {
-            issuer.sendMessage(build.parse(msg));
+            issuer.sendMessage(build.deserialize(msg));
         }
     }
 
