@@ -27,14 +27,9 @@ import co.aikar.commands.annotation.Dependency;
 import co.aikar.commands.format.MessageFormatter;
 import co.aikar.locales.MessageKeyProvider;
 import co.aikar.util.Table;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.placeholder.Replacement;
-import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
-import net.kyori.adventure.text.minimessage.transformation.TransformationType;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -44,7 +39,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -95,15 +89,15 @@ public abstract class CommandManager<
     private Annotations annotations = new Annotations<>(this);
     private CommandRouter router = new CommandRouter(this);
 
-    private TransformationRegistry defaultFormatter;
-    private Map<MessageType, TransformationRegistry> formatters = new HashMap<>();
+    private TagResolver defaultFormatter;
+    private Map<MessageType, TagResolver> formatters = new HashMap<>();
 
     public CommandManager() {
-        defaultFormatter = MessageFormatter.getRegistryOf(MessageFormatter.INFO_REPLACEMENTS);
-        formatters.put(MessageType.INFO, defaultFormatter);
-        formatters.put(MessageType.ERROR, MessageFormatter.getRegistryOf(MessageFormatter.ERROR_REPLACEMENTS));
-        formatters.put(MessageType.SYNTAX, MessageFormatter.getRegistryOf(MessageFormatter.SYNTAX_REPLACEMENTS));
-        formatters.put(MessageType.HELP, MessageFormatter.getRegistryOf(MessageFormatter.HELP_REPLACEMENTS));
+        defaultFormatter = MessageFormatter.DEFAULT;
+        formatters.put(MessageType.INFO, MessageFormatter.INFO_REPLACEMENTS);
+        formatters.put(MessageType.ERROR, MessageFormatter.ERROR_REPLACEMENTS);
+        formatters.put(MessageType.SYNTAX, MessageFormatter.SYNTAX_REPLACEMENTS);
+        formatters.put(MessageType.HELP, MessageFormatter.HELP_REPLACEMENTS);
     }
 
     public static CommandOperationContext getCurrentCommandOperationContext() {
@@ -120,19 +114,19 @@ public abstract class CommandManager<
         return context != null ? context.getCommandManager() : null;
     }
 
-    public void setFormat(MessageType type, TransformationRegistry formatter) {
+    public void setFormat(MessageType type, TagResolver formatter) {
         formatters.put(type, formatter);
     }
 
-    public TransformationRegistry getFormat(MessageType type) {
+    public TagResolver getFormat(MessageType type) {
         return formatters.getOrDefault(type, defaultFormatter);
     }
 
-    public TransformationRegistry getDefaultFormatter() {
+    public TagResolver getDefaultFormatter() {
         return defaultFormatter;
     }
 
-    public void setDefaultFormatter(TransformationRegistry defaultFormatter) {
+    public void setDefaultFormatter(TagResolver defaultFormatter) {
         this.defaultFormatter = defaultFormatter;
     }
 
@@ -403,9 +397,11 @@ public abstract class CommandManager<
 
     public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String... replacements) {
         String message = getAndReplaceMessage(issuer, key, replacements);
-        MiniMessage build = miniMessage.toBuilder().transformations(formatters.getOrDefault(type, defaultFormatter)).build();
+        // MiniMessage build = miniMessage.toBuilder().editTags(b -> b.resolver()).build();
+        TagResolver orDefault = formatters.getOrDefault(type, defaultFormatter);
         for (String msg : ACFPatterns.NEWLINE.split(message)) {
-            issuer.sendMessage(build.deserialize(msg));
+            //issuer.sendMessage(build.deserialize(msg));
+            miniMessage.deserialize(msg, orDefault);
         }
     }
 

@@ -27,6 +27,7 @@ import co.aikar.commands.velocity.contexts.OnlinePlayer;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.server.ServerInfo;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
@@ -53,6 +54,16 @@ public class VelocityCommandContexts extends CommandContexts<VelocityCommandExec
                 throw new InvalidCommandArgument(MessageKeys.NOT_ALLOWED_ON_CONSOLE, false);
             }
             return proxiedPlayer;
+        });
+
+        registerIssuerAwareContext(ServerInfo.class, (c) -> {
+            if (!(c.getSender() instanceof Player player)) {
+                throw new InvalidCommandArgument(MessageKeys.NOT_ALLOWED_ON_CONSOLE, false);
+            }
+            if (player.getCurrentServer().isEmpty()) {
+                throw new InvalidCommandArgument(MessageKeys.ERROR_PERFORMING_COMMAND, false);
+            }
+            return player.getCurrentServer().get().getServerInfo();
         });
 
         registerContext(TextFormat.class, c -> {

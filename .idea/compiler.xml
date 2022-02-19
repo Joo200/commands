@@ -9,12 +9,9 @@
       <module name="acf-adventure-paper" target="1.8" />
       <module name="acf-brigadier" target="1.8" />
       <module name="acf-bukkit" target="1.8" />
-      <module name="acf-bungee" target="1.8" />
       <module name="acf-core" target="1.8" />
       <module name="acf-example" target="1.8" />
       <module name="acf-jda" target="1.8" />
-      <module name="acf-paper" target="1.8" />
-      <module name="acf-sponge" target="1.8" />
       <module name="acf-velocity" target="1.8" />
       <module name="acf.acf-adventure-velocity.main" target="1.8" />
       <module name="acf.acf-adventure-velocity.test" target="1.8" />
@@ -25,6 +22,7 @@
       <module name="bungee.acf.acf-bungee.main" target="1.8" />
       <module name="bungee.acf.acf-bungee.test" target="1.8" />
       <module name="commands" target="1.8" />
+      <module name="core.acf.acf-core" target="1.8" />
       <module name="example-plugin" target="1.8" />
       <module name="jda.acf.acf-jda.main" target="1.8" />
       <module name="jda.acf.acf-jda.test" target="1.8" />
