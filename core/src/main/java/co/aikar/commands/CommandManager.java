@@ -47,6 +47,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 
 @SuppressWarnings("WeakerAccess")
@@ -396,16 +397,30 @@ public abstract class CommandManager<
     }
 
     public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String... replacements) {
-        String message = getAndReplaceMessage(issuer, key, replacements);
         TagResolver orDefault = formatters.getOrDefault(type, defaultFormatter);
+        // Sanitize the message (strip all tags from the replacements).
+        List<String> collect = Arrays.stream(replacements).map(s -> miniMessage.stripTags(s, orDefault)).collect(Collectors.toList());
+        String message = getAndReplaceMessage(issuer, key, collect);
+        for (String msg : ACFPatterns.NEWLINE.split(message)) {
+            issuer.sendMessage(miniMessage.deserialize(msg, orDefault));
+        }
+    }
+
+    public void sendUnsanitizedMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String replacements) {
+        TagResolver orDefault = formatters.getOrDefault(type, defaultFormatter);
+        String message = getAndReplaceMessage(issuer, key, replacements);
         for (String msg : ACFPatterns.NEWLINE.split(message)) {
             issuer.sendMessage(miniMessage.deserialize(msg, orDefault));
         }
     }
 
     public String getAndReplaceMessage(CommandIssuer issuer, MessageKeyProvider key, String... replacements) {
+        return getAndReplaceMessage(issuer, key, Arrays.asList(replacements));
+    }
+
+    public String getAndReplaceMessage(CommandIssuer issuer, MessageKeyProvider key, List<String> replacements) {
         String message = getLocales().getMessage(issuer, key.getMessageKey());
-        if (replacements.length > 0) {
+        if (replacements != null && !replacements.isEmpty()) {
             message = ACFUtil.replaceStrings(message, replacements);
         }
 

@@ -32,6 +32,7 @@ import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -297,13 +298,18 @@ public final class ACFUtil {
         return replacePatternMatch(string, ACFPatterns.getPattern(pattern), repl);
     }
 
+
     public static String replaceStrings(String string, String... replacements) {
-        if (replacements.length < 2 || replacements.length % 2 != 0) {
+        return replaceStrings(string, Arrays.asList(replacements));
+    }
+
+    public static String replaceStrings(String string, List<String> replacements) {
+        if (replacements.size() < 2 || replacements.size() % 2 != 0) {
             throw new IllegalArgumentException("Invalid Replacements");
         }
-        for (int i = 0; i < replacements.length; i += 2) {
-            String key = replacements[i];
-            String value = replacements[i + 1];
+        for (int i = 0; i < replacements.size(); i += 2) {
+            String key = replacements.get(i);
+            String value = replacements.get(i + 1);
             if (value == null) value = "";
             string = replace(string, key, value);
         }
