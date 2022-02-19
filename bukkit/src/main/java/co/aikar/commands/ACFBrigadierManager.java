@@ -89,6 +89,11 @@ public class ACFBrigadierManager<S> {
         root = rootBuilder.build();
         boolean isForwardingCommand = rootCommand.getDefCommand() instanceof ForwardingCommand;
 
+        RegisteredCommand defaultCommand = rootCommand.getDefaultRegisteredCommand();
+        if (defaultCommand != null) {
+            registerParameters(defaultCommand, root, suggestionProvider, executor, permCheckerSub);
+        }
+
         for (Map.Entry<String, RegisteredCommand> subCommand : rootCommand.getSubCommands().entries()) {
             if ((BaseCommand.isSpecialSubcommand(subCommand.getKey()) && !isForwardingCommand) || (!subCommand.getKey().equals("help") && subCommand.getValue().prefSubCommand.equals("help"))) {
                 // don't register stuff like __catchunknown and don't help command aliases
@@ -131,27 +136,7 @@ public class ACFBrigadierManager<S> {
                 subCommandNode = root;
             }
 
-            CommandNode<S> paramNode = subCommandNode;
-            CommandParameter[] parameters = subCommand.getValue().parameters;
-            for (int i = 0; i < parameters.length; i++) {
-                CommandParameter param = parameters[i];
-                CommandParameter nextParam = param.getNextParam();
-                if (param.isCommandIssuer() || (param.canExecuteWithoutInput() && nextParam != null && !nextParam.canExecuteWithoutInput())) {
-                    continue;
-                }
-                RequiredArgumentBuilder<S, Object> builder = RequiredArgumentBuilder
-                        .<S, Object>argument(param.getName(), getArgumentTypeByClazz(param))
-                        .suggests(suggestionProvider)
-                        .requires(sender -> permCheckerSub.test(subCommand.getValue(), sender));
-
-                if (nextParam != null && nextParam.canExecuteWithoutInput()) {
-                    builder.executes(executor);
-                }
-
-                CommandNode<S> subSubCommand = builder.build();
-                paramNode.addChild(subSubCommand);
-                paramNode = subSubCommand;
-            }
+            registerParameters(subCommand.getValue(), subCommandNode, suggestionProvider, executor, permCheckerSub);
 
             if (!isForwardingCommand) {
                 currentParent.addChild(subCommandNode);
@@ -159,6 +144,32 @@ public class ACFBrigadierManager<S> {
         }
 
         return root;
+    }
+
+    void registerParameters(RegisteredCommand command,
+                            CommandNode<S> node,
+                            SuggestionProvider<S> suggestionProvider,
+                            Command<S> executor,
+                            BiPredicate<RegisteredCommand, S> permChecker) {
+        for (int i = 0; i < command.parameters.length; i++) {
+            CommandParameter param = command.parameters[i];
+            CommandParameter nextParam = param.getNextParam();
+            if (param.isCommandIssuer() || (param.canExecuteWithoutInput() && nextParam != null && !nextParam.canExecuteWithoutInput())) {
+                continue;
+            }
+            RequiredArgumentBuilder<S, Object> builder = RequiredArgumentBuilder
+                    .<S, Object>argument(param.getName(), getArgumentTypeByClazz(param))
+                    .suggests(suggestionProvider)
+                    .requires(sender -> permChecker.test(command, sender));
+
+            if (nextParam != null && nextParam.canExecuteWithoutInput()) {
+                builder.executes(executor);
+            }
+
+            CommandNode<S> subSubCommand = builder.build();
+            node.addChild(subSubCommand);
+            node = subSubCommand;
+        }
     }
 
 }
