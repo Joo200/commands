@@ -64,6 +64,11 @@ public class TestCommandIssuer implements CommandIssuer {
     }
 
     @Override
+    public @NotNull String getUsername() {
+        return "user";
+    }
+
+    @Override
     public boolean hasPermission(String permission) {
         return issuer.hasPermission(permission);
     }

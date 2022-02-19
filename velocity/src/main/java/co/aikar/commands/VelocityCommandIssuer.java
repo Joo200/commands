@@ -77,6 +77,15 @@ public class VelocityCommandIssuer implements CommandIssuer {
     }
 
     @Override
+    public @NotNull String getUsername() {
+        if (isPlayer()) {
+            return ((Player) source).getUsername();
+        }
+
+        return "CONSOLE";
+    }
+
+    @Override
     public boolean hasPermission(String name) {
         return source.hasPermission(name);
     }

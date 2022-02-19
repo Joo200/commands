@@ -67,6 +67,11 @@ public interface CommandIssuer {
     @NotNull UUID getUniqueId();
 
     /**
+     * @return the display name of the issuer
+     */
+    @NotNull String getUsername();
+
+    /**
      * Has permission node
      * @param permission
      * @return

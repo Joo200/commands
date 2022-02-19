@@ -62,6 +62,7 @@ public class VelocityCommandManager extends
         registerDependency(plugin.getClass(), plugin);
         registerDependency(Plugin.class, plugin);
         registerDependency(ProxyServer.class, proxy);
+        registerDependency(VelocityCommandManager.class, this);
     }
 
     public ProxyServer getProxy() {

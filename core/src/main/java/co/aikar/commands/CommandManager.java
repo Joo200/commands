@@ -80,7 +80,7 @@ public abstract class CommandManager<
 
     protected int defaultHelpPerPage = 10;
 
-    private MiniMessage miniMessage = MiniMessage.miniMessage();
+    protected MiniMessage miniMessage = MiniMessage.miniMessage();
 
     protected Map<UUID, Locale> issuersLocale = new ConcurrentHashMap<>();
 
@@ -397,11 +397,9 @@ public abstract class CommandManager<
 
     public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String... replacements) {
         String message = getAndReplaceMessage(issuer, key, replacements);
-        // MiniMessage build = miniMessage.toBuilder().editTags(b -> b.resolver()).build();
         TagResolver orDefault = formatters.getOrDefault(type, defaultFormatter);
         for (String msg : ACFPatterns.NEWLINE.split(message)) {
-            //issuer.sendMessage(build.deserialize(msg));
-            miniMessage.deserialize(msg, orDefault);
+            issuer.sendMessage(miniMessage.deserialize(msg, orDefault));
         }
     }
 

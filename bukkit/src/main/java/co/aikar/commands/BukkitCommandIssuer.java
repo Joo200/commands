@@ -71,6 +71,15 @@ public class BukkitCommandIssuer implements CommandIssuer {
     }
 
     @Override
+    public @NotNull String getUsername() {
+        if (isPlayer()) {
+            return sender.getName();
+        }
+
+        return "CONSOLE";
+    }
+
+    @Override
     public CommandManager<?,?,?,?> getManager() {
         return manager;
     }

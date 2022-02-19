@@ -55,7 +55,7 @@ public class VelocityCommandContexts extends CommandContexts<VelocityCommandExec
             return proxiedPlayer;
         });
 
-        registerIssuerAwareContext(ServerInfo.class, (c) -> {
+        registerIssuerOnlyContext(ServerInfo.class, (c) -> {
             if (!(c.getSender() instanceof Player player)) {
                 throw new InvalidCommandArgument(MessageKeys.NOT_ALLOWED_ON_CONSOLE, false);
             }
