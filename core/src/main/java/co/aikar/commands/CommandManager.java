@@ -401,17 +401,13 @@ public abstract class CommandManager<
         // Sanitize the message (strip all tags from the replacements).
         List<String> collect = Arrays.stream(replacements).map(s -> miniMessage.stripTags(s, orDefault)).collect(Collectors.toList());
         String message = getAndReplaceMessage(issuer, key, collect);
-        for (String msg : ACFPatterns.NEWLINE.split(message)) {
-            issuer.sendMessage(miniMessage.deserialize(msg, orDefault));
-        }
+        issuer.sendMessage(miniMessage.deserialize(message, orDefault));
     }
 
     public void sendUnsanitizedMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String replacements) {
         TagResolver orDefault = formatters.getOrDefault(type, defaultFormatter);
         String message = getAndReplaceMessage(issuer, key, replacements);
-        for (String msg : ACFPatterns.NEWLINE.split(message)) {
-            issuer.sendMessage(miniMessage.deserialize(msg, orDefault));
-        }
+        issuer.sendMessage(miniMessage.deserialize(message, orDefault));
     }
 
     public String getAndReplaceMessage(CommandIssuer issuer, MessageKeyProvider key, String... replacements) {
