@@ -38,6 +38,8 @@ import co.aikar.commands.annotation.UnknownHandler;
 import co.aikar.commands.apachecommonslang.ApacheCommonsLangUtil;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
@@ -791,8 +793,8 @@ public abstract class BaseCommand {
 
     public void showSyntax(CommandIssuer issuer, RegisteredCommand<?> cmd) {
         issuer.sendMessage(MessageType.SYNTAX, MessageKeys.INVALID_SYNTAX,
-                "{command}", manager.getCommandPrefix(issuer) + cmd.command,
-                "{syntax}", cmd.getSyntaxText(issuer)
+                Placeholder.parsed("command", manager.getCommandPrefix(issuer) + cmd.command),
+                Placeholder.parsed("syntax", cmd.getSyntaxText(issuer))
         );
     }
 
@@ -845,5 +847,13 @@ public abstract class BaseCommand {
 
     protected SetMultimap<String, RegisteredCommand> getSubCommands() {
         return subCommands;
+    }
+
+    public static TagResolver userinput(String key, String val) {
+        return Placeholder.unparsed(key, val);
+    }
+
+    public static TagResolver replace(String key, String val) {
+        return Placeholder.parsed(key, val);
     }
 }

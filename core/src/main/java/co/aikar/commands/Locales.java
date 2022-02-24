@@ -187,27 +187,6 @@ public class Locales {
         return this.localeManager.getMessage(issuer, key);
     }
 
-    public String replaceI18NStrings(String message) {
-        if (message == null) {
-            return null;
-        }
-        Matcher matcher = ACFPatterns.I18N_STRING.matcher(message);
-        if (!matcher.find()) {
-            return message;
-        }
-
-        CommandIssuer issuer = CommandManager.getCurrentCommandIssuer();
-
-        matcher.reset();
-        StringBuffer sb = new StringBuffer(message.length());
-        while (matcher.find()) {
-            MessageKey key = MessageKey.of(matcher.group("key"));
-            matcher.appendReplacement(sb, Matcher.quoteReplacement(getMessage(issuer, key)));
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
-    }
-
     public boolean addBundleClassLoader(ClassLoader classLoader) {
         return !this.registeredClassLoaders.contains(classLoader) && this.registeredClassLoaders.add(classLoader);
 

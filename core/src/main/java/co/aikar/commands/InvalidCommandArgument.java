@@ -25,11 +25,12 @@ package co.aikar.commands;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 public class InvalidCommandArgument extends RuntimeException {
     final boolean showSyntax;
     final MessageKey key;
-    final String[] replacements;
+    final TagResolver[] replacements;
 
     public InvalidCommandArgument() {
         this(null, true);
@@ -39,19 +40,19 @@ public class InvalidCommandArgument extends RuntimeException {
         this(null, showSyntax);
     }
 
-    public InvalidCommandArgument(MessageKeyProvider key, String... replacements) {
+    public InvalidCommandArgument(MessageKeyProvider key, TagResolver... replacements) {
         this(key.getMessageKey(), replacements);
     }
 
-    public InvalidCommandArgument(MessageKey key, String... replacements) {
+    public InvalidCommandArgument(MessageKey key, TagResolver... replacements) {
         this(key, true, replacements);
     }
 
-    public InvalidCommandArgument(MessageKeyProvider key, boolean showSyntax, String... replacements) {
+    public InvalidCommandArgument(MessageKeyProvider key, boolean showSyntax, TagResolver... replacements) {
         this(key.getMessageKey(), showSyntax, replacements);
     }
 
-    public InvalidCommandArgument(MessageKey key, boolean showSyntax, String... replacements) {
+    public InvalidCommandArgument(MessageKey key, boolean showSyntax, TagResolver... replacements) {
         super(key.getKey(), null, false, false);
         this.showSyntax = showSyntax;
         this.key = key;
@@ -73,7 +74,7 @@ public class InvalidCommandArgument extends RuntimeException {
         return key;
     }
 
-    public String[] getReplacements() {
+    public TagResolver[] getReplacements() {
         return replacements;
     }
 

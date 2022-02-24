@@ -32,6 +32,7 @@ import co.aikar.commands.annotation.HelpSearchTags;
 import co.aikar.commands.annotation.Private;
 import co.aikar.commands.annotation.Syntax;
 import co.aikar.commands.contexts.ContextResolver;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
@@ -186,7 +187,7 @@ public class RegisteredCommand<CEC extends CommandExecutionContext<CEC, ? extend
             if (invalidCommandArg.key != null) {
                 sender.sendMessage(MessageType.ERROR, invalidCommandArg.key, invalidCommandArg.replacements);
             } else if (e.getMessage() != null && !e.getMessage().isEmpty()) {
-                sender.sendMessage(MessageType.ERROR, MessageKeys.ERROR_PREFIX, "{message}", e.getMessage());
+                sender.sendMessage(MessageType.ERROR, MessageKeys.ERROR_PREFIX, Placeholder.parsed("message", e.getMessage()));
             }
             if (invalidCommandArg.showSyntax) {
                 scope.showSyntax(sender, this);
@@ -258,7 +259,7 @@ public class RegisteredCommand<CEC extends CommandExecutionContext<CEC, ? extend
                 }
             } else {
                 if (!this.manager.hasPermission(sender, parameterPermissions)) {
-                    sender.sendMessage(MessageType.ERROR, MessageKeys.PERMISSION_DENIED_PARAMETER, "{param}", parameterName);
+                    sender.sendMessage(MessageType.ERROR, MessageKeys.PERMISSION_DENIED_PARAMETER, Placeholder.parsed("param", parameterName));
                     throw new InvalidCommandArgument(false);
                 }
             }
@@ -283,7 +284,7 @@ public class RegisteredCommand<CEC extends CommandExecutionContext<CEC, ? extend
                 }
                 if (!possible.contains(arg.toLowerCase(Locale.ENGLISH))) {
                     throw new InvalidCommandArgument(MessageKeys.PLEASE_SPECIFY_ONE_OF,
-                            "{valid}", ACFUtil.join(possible, ", "));
+                            Placeholder.parsed("valid", ACFUtil.join(possible, ", ")));
                 }
             }
 

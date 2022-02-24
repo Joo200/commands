@@ -23,6 +23,8 @@
 
 package co.aikar.commands;
 
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -114,8 +116,8 @@ public class CommandHelpFormatter {
 
     public void printDetailedHelpHeader(CommandHelp help, CommandIssuer issuer, HelpEntry entry) {
         issuer.sendMessage(MessageType.HELP, MessageKeys.HELP_DETAILED_HEADER,
-                "{command}", entry.getCommand(),
-                "{commandprefix}", help.getCommandPrefix()
+                Placeholder.parsed("command", entry.getCommand()),
+                Placeholder.parsed("commandprefix", help.getCommandPrefix())
         );
     }
 
@@ -138,15 +140,15 @@ public class CommandHelpFormatter {
      * @param help
      * @return
      */
-    public String[] getHeaderFooterFormatReplacements(CommandHelp help) {
-        return new String[]{
-                "{search}", help.search != null ? String.join(" ", help.search) : "",
-                "{command}", help.getCommandName(),
-                "{commandprefix}", help.getCommandPrefix(),
-                "{rootcommand}", help.getCommandName(),
-                "{page}", "" + help.getPage(),
-                "{totalpages}", "" + help.getTotalPages(),
-                "{results}", "" + help.getTotalResults()
+    public TagResolver[] getHeaderFooterFormatReplacements(CommandHelp help) {
+        return new TagResolver[]{
+                Placeholder.parsed("search", help.search != null ? String.join(" ", help.search) : ""),
+                Placeholder.parsed("command", help.getCommandName()),
+                Placeholder.parsed("commandprefix", help.getCommandPrefix()),
+                Placeholder.parsed("rootcommand", help.getCommandName()),
+                Placeholder.parsed("page", "" + help.getPage()),
+                Placeholder.parsed("totalpages", "" + help.getTotalPages()),
+                Placeholder.parsed("results", "" + help.getTotalResults())
         };
     }
 
@@ -157,14 +159,14 @@ public class CommandHelpFormatter {
      * @param entry
      * @return
      */
-    public String[] getEntryFormatReplacements(CommandHelp help, HelpEntry entry) {
+    public TagResolver[] getEntryFormatReplacements(CommandHelp help, HelpEntry entry) {
         //{command} {parameters} {separator} {description}
-        return new String[]{
-                "{command}", entry.getCommand(),
-                "{commandprefix}", help.getCommandPrefix(),
-                "{parameters}", entry.getParameterSyntax(help.getIssuer()),
-                "{separator}", entry.getDescription().isEmpty() ? "" : "-",
-                "{description}", entry.getDescription()
+        return new TagResolver[]{
+                Placeholder.parsed("command", entry.getCommand()),
+                Placeholder.parsed("commandprefix", help.getCommandPrefix()),
+                Placeholder.parsed("parameters", entry.getParameterSyntax(help.getIssuer())),
+                Placeholder.parsed("separator", entry.getDescription().isEmpty() ? "" : "-"),
+                Placeholder.parsed("description", entry.getDescription())
         };
     }
 
@@ -177,16 +179,16 @@ public class CommandHelpFormatter {
      * @return
      */
     @NotNull
-    public String[] getParameterFormatReplacements(CommandHelp help, CommandParameter param, HelpEntry entry) {
+    public TagResolver[] getParameterFormatReplacements(CommandHelp help, CommandParameter param, HelpEntry entry) {
         //{name} {description}
-        return new String[]{
-                "{name}", param.getDisplayName(help.getIssuer()),
-                "{syntaxorname}", ACFUtil.nullDefault(param.getSyntax(help.getIssuer()), param.getDisplayName(help.getIssuer())),
-                "{syntax}", ACFUtil.nullDefault(param.getSyntax(help.getIssuer()), ""),
-                "{description}", ACFUtil.nullDefault(param.getDescription(), ""),
-                "{command}", help.getCommandName(),
-                "{fullcommand}", entry.getCommand(),
-                "{commandprefix}", help.getCommandPrefix()
+        return new TagResolver[]{
+                Placeholder.parsed("name", param.getDisplayName(help.getIssuer())),
+                Placeholder.parsed("syntaxorname", ACFUtil.nullDefault(param.getSyntax(help.getIssuer()), param.getDisplayName(help.getIssuer()))),
+                Placeholder.parsed("syntax", ACFUtil.nullDefault(param.getSyntax(help.getIssuer()), "")),
+                Placeholder.parsed("description", ACFUtil.nullDefault(param.getDescription(), "")),
+                Placeholder.parsed("command", help.getCommandName()),
+                Placeholder.parsed("fullcommand", entry.getCommand()),
+                Placeholder.parsed("commandprefix", help.getCommandPrefix())
         };
     }
 }

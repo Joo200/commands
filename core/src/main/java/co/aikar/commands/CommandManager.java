@@ -24,6 +24,7 @@
 package co.aikar.commands;
 
 import co.aikar.commands.annotation.Dependency;
+import co.aikar.commands.format.LangPlaceholder;
 import co.aikar.commands.format.MessageFormatter;
 import co.aikar.locales.MessageKeyProvider;
 import co.aikar.util.Table;
@@ -47,7 +48,8 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 
 @SuppressWarnings("WeakerAccess")
@@ -81,7 +83,7 @@ public abstract class CommandManager<
 
     protected int defaultHelpPerPage = 10;
 
-    protected MiniMessage miniMessage = MiniMessage.miniMessage();
+    protected MiniMessage miniMessage;
 
     protected Map<UUID, Locale> issuersLocale = new ConcurrentHashMap<>();
 
@@ -99,6 +101,9 @@ public abstract class CommandManager<
         formatters.put(MessageType.ERROR, MessageFormatter.ERROR_REPLACEMENTS);
         formatters.put(MessageType.SYNTAX, MessageFormatter.SYNTAX_REPLACEMENTS);
         formatters.put(MessageType.HELP, MessageFormatter.HELP_REPLACEMENTS);
+
+        miniMessage = MiniMessage.builder().tags(TagResolver.builder()
+                .resolver(TagResolver.standard()).resolver(new LangPlaceholder(this)).build()).build();
     }
 
     public static CommandOperationContext getCurrentCommandOperationContext() {
@@ -392,37 +397,19 @@ public abstract class CommandManager<
         return result;
     }
 
-    public void sendMessage(IT issuerArg, MessageType type, MessageKeyProvider key, String... replacements) {
+    public void sendMessage(IT issuerArg, MessageType type, MessageKeyProvider key, TagResolver... replacements) {
         sendMessage(getCommandIssuer(issuerArg), type, key, replacements);
     }
 
-    public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String... replacements) {
-        TagResolver orDefault = formatters.getOrDefault(type, defaultFormatter);
+    public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, TagResolver... replacements) {
+        TagResolver tags = TagResolver.resolver(formatters.getOrDefault(type, defaultFormatter), TagResolver.resolver(replacements));
         // Sanitize the message (strip all tags from the replacements).
-        List<String> collect = Arrays.stream(replacements).map(s -> miniMessage.stripTags(s, orDefault)).collect(Collectors.toList());
-        String message = getAndReplaceMessage(issuer, key, collect);
-        issuer.sendMessage(miniMessage.deserialize(message, orDefault));
+        String message = getMessage(issuer, key);
+        issuer.sendMessage(miniMessage.deserialize(message, tags));
     }
 
-    public void sendUnsanitizedMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String replacements) {
-        TagResolver orDefault = formatters.getOrDefault(type, defaultFormatter);
-        String message = getAndReplaceMessage(issuer, key, replacements);
-        issuer.sendMessage(miniMessage.deserialize(message, orDefault));
-    }
-
-    public String getAndReplaceMessage(CommandIssuer issuer, MessageKeyProvider key, String... replacements) {
-        return getAndReplaceMessage(issuer, key, Arrays.asList(replacements));
-    }
-
-    public String getAndReplaceMessage(CommandIssuer issuer, MessageKeyProvider key, List<String> replacements) {
-        String message = getLocales().getMessage(issuer, key.getMessageKey());
-        if (replacements != null && !replacements.isEmpty()) {
-            message = ACFUtil.replaceStrings(message, replacements);
-        }
-
-        message = getCommandReplacements().replace(message);
-        message = getLocales().replaceI18NStrings(message);
-        return message;
+    public String getMessage(CommandIssuer issuer, MessageKeyProvider key) {
+        return getLocales().getMessage(issuer, key.getMessageKey());
     }
 
     public void onLocaleChange(IssuerLocaleChangedCallback<I> onChange) {

@@ -23,6 +23,7 @@
 
 package co.aikar.commands;
 
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -270,7 +271,7 @@ public class ACFBukkitUtil {
         String name = ACFUtil.replace(search, ":confirm", "");
 
         if (!isValidName(name)) {
-            issuer.sendError(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, "{name}", name);
+            issuer.sendError(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, Placeholder.parsed("name", name));
             return null;
         }
 
@@ -282,7 +283,7 @@ public class ACFBukkitUtil {
         if (matches.size() > 1 || confirmList.size() > 1) {
             String allMatches = matches.stream().map(Player::getName).collect(Collectors.joining(", "));
             issuer.sendError(MinecraftMessageKeys.MULTIPLE_PLAYERS_MATCH,
-                    "{search}", name, "{all}", allMatches);
+                    Placeholder.parsed("search", name), Placeholder.parsed("all", allMatches));
             return null;
         }
 
@@ -290,10 +291,10 @@ public class ACFBukkitUtil {
         if (matches.isEmpty()) {
             Player player = ACFUtil.getFirstElement(confirmList);
             if (player == null) {
-                issuer.sendError(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, "{search}", name);
+                issuer.sendError(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, Placeholder.parsed("search", name));
                 return null;
             } else {
-                issuer.sendInfo(MinecraftMessageKeys.PLAYER_IS_VANISHED_CONFIRM, "{vanished}", player.getName());
+                issuer.sendInfo(MinecraftMessageKeys.PLAYER_IS_VANISHED_CONFIRM, Placeholder.parsed("vanished", player.getName()));
                 return null;
             }
         }

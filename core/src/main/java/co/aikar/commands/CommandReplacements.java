@@ -23,12 +23,16 @@
 
 package co.aikar.commands;
 
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.AbstractMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,18 +64,26 @@ public class CommandReplacements {
 
     @Nullable
     private String addReplacement0(String key, String val) {
-        key = ACFPatterns.PERCENTAGE.matcher(key.toLowerCase(Locale.ENGLISH)).replaceAll("");
-        Pattern pattern = Pattern.compile("%\\{" + Pattern.quote(key) + "}|%" + Pattern.quote(key) + "\\b",
+        final String keyCleaned = ACFPatterns.PERCENTAGE.matcher(key.toLowerCase(Locale.ENGLISH)).replaceAll("");
+        Pattern pattern = Pattern.compile("%\\{" + Pattern.quote(keyCleaned) + "}|%" + Pattern.quote(keyCleaned) + "\\b",
                 Pattern.CASE_INSENSITIVE);
 
         Map.Entry<Pattern, String> entry = new AbstractMap.SimpleImmutableEntry<>(pattern, val);
-        Map.Entry<Pattern, String> replaced = replacements.put(key, entry);
+        Map.Entry<Pattern, String> replaced = replacements.put(keyCleaned, entry);
 
         if (replaced != null) {
             return replaced.getValue();
         }
 
         return null;
+    }
+
+    public String getReplacement(String key) {
+        Map.Entry<Pattern, String> patternStringEntry = replacements.get(key);
+        if (patternStringEntry == null) {
+            return key;
+        }
+        return patternStringEntry.getValue();
     }
 
     public String replace(String text) {

@@ -62,7 +62,8 @@ public class BukkitRootCommand extends Command implements RootCommand, PluginIde
         }
 
         if (description != null) {
-            return manager.getLocales().replaceI18NStrings(description);
+            return description;
+            // return manager.getLocales().replaceI18NStrings(description);
         }
         return super.getDescription();
     }

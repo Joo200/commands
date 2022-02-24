@@ -26,6 +26,8 @@ package co.aikar.commands;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -51,7 +53,7 @@ public interface CommandIssuer {
      * @param message
      */
     default void sendMessage(String message) {
-        getManager().sendMessage(this, MessageType.INFO, MessageKeys.INFO_MESSAGE, "{message}", message);
+        getManager().sendMessage(this, MessageType.INFO, MessageKeys.INFO_MESSAGE, Placeholder.parsed("message", message));
     }
 
     /**
@@ -78,28 +80,28 @@ public interface CommandIssuer {
      */
     boolean hasPermission(String permission);
 
-    default void sendError(MessageKeyProvider key, String... replacements) {
+    default void sendError(MessageKeyProvider key, TagResolver... replacements) {
         sendMessage(MessageType.ERROR, key.getMessageKey(), replacements);
     }
-    default void sendSyntax(MessageKeyProvider key, String... replacements) {
+    default void sendSyntax(MessageKeyProvider key, TagResolver... replacements) {
         sendMessage(MessageType.SYNTAX, key.getMessageKey(), replacements);
     }
-    default void sendInfo(MessageKeyProvider key, String... replacements) {
+    default void sendInfo(MessageKeyProvider key, TagResolver... replacements) {
         sendMessage(MessageType.INFO, key.getMessageKey(), replacements);
     }
-    default void sendError(MessageKey key, String... replacements) {
+    default void sendError(MessageKey key, TagResolver... replacements) {
         sendMessage(MessageType.ERROR, key, replacements);
     }
-    default void sendSyntax(MessageKey key, String... replacements) {
+    default void sendSyntax(MessageKey key, TagResolver... replacements) {
         sendMessage(MessageType.SYNTAX, key, replacements);
     }
-    default void sendInfo(MessageKey key, String... replacements) {
+    default void sendInfo(MessageKey key, TagResolver... replacements) {
         sendMessage(MessageType.INFO, key, replacements);
     }
-    default void sendMessage(MessageType type, MessageKeyProvider key, String... replacements) {
+    default void sendMessage(MessageType type, MessageKeyProvider key, TagResolver... replacements) {
         sendMessage(type, key.getMessageKey(), replacements);
     }
-    default void sendMessage(MessageType type, MessageKey key, String... replacements) {
+    default void sendMessage(MessageType type, MessageKey key, TagResolver... replacements) {
         getManager().sendMessage(this, type, key, replacements);
     }
 }

@@ -25,17 +25,18 @@ package co.aikar.commands;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 public class ConditionFailedException extends InvalidCommandArgument {
     public ConditionFailedException() {
         super(false);
     }
 
-    public ConditionFailedException(MessageKeyProvider key, String... replacements) {
+    public ConditionFailedException(MessageKeyProvider key, TagResolver... replacements) {
         super(key, false, replacements);
     }
 
-    public ConditionFailedException(MessageKey key, String... replacements) {
+    public ConditionFailedException(MessageKey key, TagResolver... replacements) {
         super(key, false, replacements);
     }
 

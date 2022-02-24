@@ -24,6 +24,7 @@
 package co.aikar.commands;
 
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -74,7 +75,7 @@ public class BukkitCommandContexts extends CommandContexts<BukkitCommandExecutio
             }
             if (players.isEmpty() && !c.hasFlag("allowempty")) {
                 issuer.sendError(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER,
-                        "{search}", search);
+                        Placeholder.parsed("search", search));
 
                 throw new InvalidCommandArgument(false);
             }
@@ -138,18 +139,18 @@ public class BukkitCommandContexts extends CommandContexts<BukkitCommandExecutio
                     uuid = UUID.fromString(name);
                 } catch (IllegalArgumentException e) {
                     throw new InvalidCommandArgument(MinecraftMessageKeys.NO_PLAYER_FOUND_OFFLINE,
-                            "{search}", name);
+                            Placeholder.parsed("search", name));
                 }
                 offlinePlayer = Bukkit.getOfflinePlayer(uuid);
             } else {
                 if (!isValidName(name)) {
-                    throw new InvalidCommandArgument(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, "{name}", name);
+                    throw new InvalidCommandArgument(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, Placeholder.parsed("name", name));
                 }
                 offlinePlayer = Bukkit.getOfflinePlayer(name);
             }
             if (offlinePlayer == null || (!offlinePlayer.hasPlayedBefore() && !offlinePlayer.isOnline())) {
                 throw new InvalidCommandArgument(MinecraftMessageKeys.NO_PLAYER_FOUND_OFFLINE,
-                        "{search}", name);
+                        Placeholder.parsed("search", name));
             }
             return offlinePlayer;
         });
@@ -172,7 +173,7 @@ public class BukkitCommandContexts extends CommandContexts<BukkitCommandExecutio
                         .map(color -> "<c2>" + ACFUtil.simplifyString(color.name()) + "</c2>")
                         .collect(Collectors.joining("<c1>,</c1> "));
 
-                throw new InvalidCommandArgument(MessageKeys.PLEASE_SPECIFY_ONE_OF, "{valid}", valid);
+                throw new InvalidCommandArgument(MessageKeys.PLEASE_SPECIFY_ONE_OF, Placeholder.parsed("valid", valid));
             }
             return match;
         });

@@ -4,6 +4,7 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class ACFVelocityUtil {
         CommandSource requester = issuer.getIssuer();
         String name = ACFUtil.replace(search, ":confirm", "");
         if (!isValidName(name)) {
-            issuer.sendError(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, "{name}", name);
+            issuer.sendError(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, Placeholder.parsed("name", name));
             return null;
         }
 
@@ -31,12 +32,13 @@ public class ACFVelocityUtil {
 
         if (matches.size() > 1) {
             String allMatches = matches.stream().map(Player::getUsername).collect(Collectors.joining(", "));
-            issuer.sendError(MinecraftMessageKeys.MULTIPLE_PLAYERS_MATCH, "{search}", name, "{all}", allMatches);
+            issuer.sendError(MinecraftMessageKeys.MULTIPLE_PLAYERS_MATCH,
+                    Placeholder.parsed("search", name), Placeholder.parsed("all", allMatches));
             return null;
         }
 
         if (matches.isEmpty()) {
-            issuer.sendError(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, "{search}", name);
+            issuer.sendError(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, Placeholder.parsed("search", name));
             return null;
         }
 

@@ -24,6 +24,7 @@
 package co.aikar.commands;
 
 import com.google.common.collect.SetMultimap;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -153,7 +154,7 @@ public class CommandHelp {
         Iterator<HelpEntry> results = helpEntries.stream()
                 .sorted(Comparator.comparingInt(helpEntry -> helpEntry.getSearchScore() * -1)).iterator();
         if (!results.hasNext()) {
-            issuer.sendMessage(MessageType.ERROR, MessageKeys.NO_COMMAND_MATCHED_SEARCH, "{search}", ACFUtil.join(this.search, " "));
+            issuer.sendMessage(MessageType.ERROR, MessageKeys.NO_COMMAND_MATCHED_SEARCH, Placeholder.parsed("search", ACFUtil.join(this.search, " ")));
             helpEntries = getHelpEntries();
             results = helpEntries.iterator();
         }
