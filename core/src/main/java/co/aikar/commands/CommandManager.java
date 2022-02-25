@@ -102,8 +102,7 @@ public abstract class CommandManager<
         formatters.put(MessageType.SYNTAX, MessageFormatter.SYNTAX_REPLACEMENTS);
         formatters.put(MessageType.HELP, MessageFormatter.HELP_REPLACEMENTS);
 
-        miniMessage = MiniMessage.builder().tags(TagResolver.builder()
-                .resolver(TagResolver.standard()).resolver(new LangPlaceholder(this)).build()).build();
+        miniMessage = MiniMessage.miniMessage();
     }
 
     public static CommandOperationContext getCurrentCommandOperationContext() {
@@ -397,15 +396,45 @@ public abstract class CommandManager<
         return result;
     }
 
+    public void sendMessage(IT issuerArg, MessageKeyProvider key) {
+        sendMessage(getCommandIssuer(issuerArg), MessageType.INFO, key);
+    }
+
+    public void sendMessage(IT issuerArg, MessageType type, MessageKeyProvider key) {
+        sendMessage(getCommandIssuer(issuerArg), type, key);
+    }
+
+    public void sendMessage(CommandIssuer issuer, MessageKeyProvider key) {
+        sendMessage(issuer, MessageType.INFO, key);
+    }
+
+    public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key) {
+        TagResolver tags = TagResolver.builder()
+                .resolver(formatters.getOrDefault(type, defaultFormatter))
+                .resolver(new LangPlaceholder(this, issuer)).build();
+
+        issuer.sendMessage(miniMessage.deserialize(getMessage(issuer, key), tags));
+    }
+
+    public void sendMessage(IT issuerArg, MessageKeyProvider key, TagResolver... replacements) {
+        sendMessage(getCommandIssuer(issuerArg), MessageType.INFO, key, replacements);
+    }
+
     public void sendMessage(IT issuerArg, MessageType type, MessageKeyProvider key, TagResolver... replacements) {
         sendMessage(getCommandIssuer(issuerArg), type, key, replacements);
     }
 
+    public void sendMessage(CommandIssuer issuer, MessageKeyProvider key, TagResolver... replacements) {
+        sendMessage(issuer, MessageType.INFO, key, replacements);
+    }
+
     public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, TagResolver... replacements) {
-        TagResolver tags = TagResolver.resolver(formatters.getOrDefault(type, defaultFormatter), TagResolver.resolver(replacements));
-        // Sanitize the message (strip all tags from the replacements).
-        String message = getMessage(issuer, key);
-        issuer.sendMessage(miniMessage.deserialize(message, tags));
+        TagResolver tags = TagResolver.builder()
+                .resolver(formatters.getOrDefault(type, defaultFormatter))
+                .resolver(new LangPlaceholder(this, issuer))
+                .resolvers(replacements).build();
+
+        issuer.sendMessage(miniMessage.deserialize(getMessage(issuer, key), tags));
     }
 
     public String getMessage(CommandIssuer issuer, MessageKeyProvider key) {

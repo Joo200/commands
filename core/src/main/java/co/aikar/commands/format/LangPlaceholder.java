@@ -1,5 +1,6 @@
 package co.aikar.commands.format;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.CommandManager;
 import co.aikar.locales.MessageKey;
 import net.kyori.adventure.text.Component;
@@ -15,10 +16,12 @@ import org.jetbrains.annotations.Nullable;
 public class LangPlaceholder implements TagResolver {
     public static final String LANG = "lang";
 
-    private CommandManager<?,?,?,?> manager;
+    private final CommandManager<?,?,?,?> manager;
+    private final CommandIssuer issuer;
 
-    public LangPlaceholder(CommandManager<?,?,?,?> manager) {
+    public LangPlaceholder(CommandManager<?,?,?,?> manager, CommandIssuer issuer) {
         this.manager = manager;
+        this.issuer = issuer;
     }
 
     @Override
@@ -28,7 +31,7 @@ public class LangPlaceholder implements TagResolver {
         if (arg.startsWith("%")) {
             value = manager.getCommandReplacements().getReplacement(arg.substring(1));
         } else {
-            value = manager.getMessage(null, MessageKey.of(arg));
+            value = manager.getMessage(issuer, MessageKey.of(arg));
         }
         return Tag.preProcessParsed(value);
     }
