@@ -41,7 +41,6 @@ dependencies {
     implementation("co.aikar:minecraft-timings:1.0.4")
     compileOnly("io.papermc.paper:paper-api:${Versions.PAPER}")
     compileOnly("io.papermc.paper:paper-mojangapi:${Versions.PAPER}")
-    api("net.kyori:adventure-text-minimessage:${Versions.ADVENTURE}")
     compileOnly("com.mojang:brigadier:1.0.17")
 }
 

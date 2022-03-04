@@ -35,7 +35,6 @@ repositories {
 dependencies {
     api(project(":acf-core"))
     compileOnly("com.velocitypowered:velocity-api:${Versions.VELOCITY}")
-    api("net.kyori:adventure-text-minimessage:${Versions.ADVENTURE}")
 }
 
 description = "ACF (Velocity)"
