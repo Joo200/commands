@@ -413,7 +413,7 @@ public abstract class CommandManager<
                 .resolver(formatters.getOrDefault(type, defaultFormatter))
                 .resolver(new LangPlaceholder(this, issuer)).build();
 
-        issuer.sendMessage(miniMessage.deserialize(getMessage(issuer, key), tags));
+        issuer.sendMessage(miniMessage.deserialize("<c1>" + getMessage(issuer, key), tags));
     }
 
     public void sendMessage(IT issuerArg, MessageKeyProvider key, TagResolver... replacements) {
@@ -434,7 +434,7 @@ public abstract class CommandManager<
                 .resolver(new LangPlaceholder(this, issuer))
                 .resolvers(replacements).build();
 
-        issuer.sendMessage(miniMessage.deserialize(getMessage(issuer, key), tags));
+        issuer.sendMessage(miniMessage.deserialize("<c1>" + getMessage(issuer, key), tags));
     }
 
     public String getMessage(CommandIssuer issuer, MessageKeyProvider key) {
