@@ -182,13 +182,8 @@ public class RegisteredCommand<CEC extends CommandExecutionContext<CEC, ? extend
                 commandHelp.setSearch(showHelp.searchArgs == null ? args : showHelp.searchArgs);
             }
             commandHelp.showHelp(sender);
-        } else if (e instanceof InvalidCommandArgument) {
-            InvalidCommandArgument invalidCommandArg = (InvalidCommandArgument) e;
-            if (invalidCommandArg.key != null) {
-                sender.sendMessage(MessageType.ERROR, invalidCommandArg.key, invalidCommandArg.replacements);
-            } else if (e.getMessage() != null && !e.getMessage().isEmpty()) {
-                sender.sendMessage(MessageType.ERROR, MessageKeys.ERROR_PREFIX, Placeholder.parsed("message", e.getMessage()));
-            }
+        } else if (e instanceof InvalidCommandArgument invalidCommandArg) {
+            manager.showInvalidCommand(sender, invalidCommandArg);
             if (invalidCommandArg.showSyntax) {
                 scope.showSyntax(sender, this);
             }

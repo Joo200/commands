@@ -29,6 +29,7 @@ import co.aikar.commands.format.MessageFormatter;
 import co.aikar.locales.MessageKeyProvider;
 import co.aikar.util.Table;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 
@@ -548,7 +549,7 @@ public abstract class CommandManager<
      * @param baseCommand the instance which fields should be filled
      */
     void injectDependencies(BaseCommand baseCommand) {
-        Class clazz = baseCommand.getClass();
+        Class<?> clazz = baseCommand.getClass();
         do {
             for (Field field : clazz.getDeclaredFields()) {
                 if (annotations.hasAnnotation(field, Dependency.class)) {
@@ -569,7 +570,7 @@ public abstract class CommandManager<
                         field.set(baseCommand, object);
                         field.setAccessible(accessible);
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace(); //TODO should we print our own exception here to make a more descriptive error?
+                        log(LogLevel.ERROR, "Unable to inject dependency in class " + baseCommand.getClass().getName(), e);
                     }
                 }
             }
@@ -602,5 +603,17 @@ public abstract class CommandManager<
 
     public String getCommandPrefix(CommandIssuer issuer) {
         return "";
+    }
+
+    public void showInvalidCommand(IT sender, InvalidCommandArgument invalidCommandArg) {
+        showInvalidCommand(getCommandIssuer(sender), invalidCommandArg);
+    }
+
+    public void showInvalidCommand(CommandIssuer sender, InvalidCommandArgument invalidCommandArg) {
+        if (invalidCommandArg.key != null) {
+            sender.sendMessage(MessageType.ERROR, invalidCommandArg.key, invalidCommandArg.replacements);
+        } else if (invalidCommandArg.getMessage() != null && !invalidCommandArg.getMessage().isEmpty()) {
+            sender.sendMessage(MessageType.ERROR, MessageKeys.ERROR_PREFIX, Placeholder.parsed("message", invalidCommandArg.getMessage()));
+        }
     }
 }
