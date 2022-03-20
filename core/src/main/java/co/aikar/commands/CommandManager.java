@@ -605,11 +605,11 @@ public abstract class CommandManager<
         return "";
     }
 
-    public void showInvalidCommand(IT sender, InvalidCommandArgument invalidCommandArg) {
-        showInvalidCommand(getCommandIssuer(sender), invalidCommandArg);
+    public void showInvalidRuntime(IT sender, InvalidRuntimeException invalidCommandArg) {
+        showInvalidRuntime(getCommandIssuer(sender), invalidCommandArg);
     }
 
-    public void showInvalidCommand(CommandIssuer sender, InvalidCommandArgument invalidCommandArg) {
+    public void showInvalidRuntime(CommandIssuer sender, InvalidRuntimeException invalidCommandArg) {
         if (invalidCommandArg.key != null) {
             sender.sendMessage(MessageType.ERROR, invalidCommandArg.key, invalidCommandArg.replacements);
         } else if (invalidCommandArg.getMessage() != null && !invalidCommandArg.getMessage().isEmpty()) {

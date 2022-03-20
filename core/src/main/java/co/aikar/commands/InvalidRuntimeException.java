@@ -27,44 +27,27 @@ import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
-public class InvalidCommandArgument extends InvalidRuntimeException {
-    final boolean showSyntax;
+public abstract class InvalidRuntimeException extends RuntimeException {
+    final MessageKey key;
+    final TagResolver[] replacements;
 
-    public InvalidCommandArgument() {
-        this(null, true);
+    public InvalidRuntimeException(MessageKeyProvider key, TagResolver... replacements) {
+        super(key.getMessageKey().getKey(), null, false, false);
+        this.key = key.getMessageKey();
+        this.replacements = replacements;
     }
 
-    public InvalidCommandArgument(boolean showSyntax) {
-        this(null, showSyntax);
+    public InvalidRuntimeException(String message) {
+        super(message, null, false, false);
+        this.replacements = null;
+        this.key = null;
     }
 
-    public InvalidCommandArgument(MessageKeyProvider key, TagResolver... replacements) {
-        this(key.getMessageKey(), replacements);
+    public MessageKey getKey() {
+        return key;
     }
 
-    public InvalidCommandArgument(MessageKey key, TagResolver... replacements) {
-        this(key, true, replacements);
-    }
-
-    public InvalidCommandArgument(MessageKeyProvider key, boolean showSyntax, TagResolver... replacements) {
-        this(key.getMessageKey(), showSyntax, replacements);
-    }
-
-    public InvalidCommandArgument(MessageKey key, boolean showSyntax, TagResolver... replacements) {
-        super(key, replacements);
-        this.showSyntax = showSyntax;
-    }
-
-    public InvalidCommandArgument(String message) {
-        this(message, true);
-    }
-
-    public InvalidCommandArgument(String message, boolean showSyntax) {
-        super(message);
-        this.showSyntax = showSyntax;
-    }
-
-    public boolean isShowSyntax() {
-        return showSyntax;
+    public TagResolver[] getReplacements() {
+        return replacements;
     }
 }

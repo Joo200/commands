@@ -183,7 +183,7 @@ public class RegisteredCommand<CEC extends CommandExecutionContext<CEC, ? extend
             }
             commandHelp.showHelp(sender);
         } else if (e instanceof InvalidCommandArgument invalidCommandArg) {
-            manager.showInvalidCommand(sender, invalidCommandArg);
+            manager.showInvalidRuntime(sender, invalidCommandArg);
             if (invalidCommandArg.showSyntax) {
                 scope.showSyntax(sender, this);
             }
