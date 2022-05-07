@@ -23,6 +23,7 @@
 
 package co.aikar.commands;
 
+import co.aikar.locales.LanguageTable;
 import co.aikar.locales.LocaleManager;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
@@ -173,6 +174,16 @@ public class Locales {
     public String getMessage(CommandIssuer issuer, MessageKeyProvider key) {
         final MessageKey msgKey = key.getMessageKey();
         String message = this.localeManager.getMessage(issuer, msgKey);
+        if (message == null) {
+            manager.log(LogLevel.ERROR, "Missing Language Key: " + msgKey.getKey());
+            message = "<MISSING_LANGUAGE_KEY:" + msgKey.getKey() + ">";
+        }
+        return message;
+    }
+
+    public String getMessage(Locale locale, MessageKeyProvider key) {
+        final MessageKey msgKey = key.getMessageKey();
+        String message = this.localeManager.getTable(locale).getMessage(msgKey);
         if (message == null) {
             manager.log(LogLevel.ERROR, "Missing Language Key: " + msgKey.getKey());
             message = "<MISSING_LANGUAGE_KEY:" + msgKey.getKey() + ">";

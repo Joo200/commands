@@ -28,6 +28,7 @@ import co.aikar.commands.format.LangPlaceholder;
 import co.aikar.commands.format.MessageFormatter;
 import co.aikar.locales.MessageKeyProvider;
 import co.aikar.util.Table;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -410,11 +411,7 @@ public abstract class CommandManager<
     }
 
     public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key) {
-        TagResolver tags = TagResolver.builder()
-                .resolver(formatters.getOrDefault(type, defaultFormatter))
-                .resolver(new LangPlaceholder(this, issuer)).build();
-
-        issuer.sendMessage(miniMessage.deserialize("<c1>" + getMessage(issuer, key), tags));
+        issuer.sendMessage(formatMessage(issuer, type, key));
     }
 
     public void sendMessage(IT issuerArg, MessageKeyProvider key, TagResolver... replacements) {
@@ -430,16 +427,57 @@ public abstract class CommandManager<
     }
 
     public void sendMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, TagResolver... replacements) {
+        issuer.sendMessage(formatMessage(issuer, type, key, replacements));
+    }
+
+    public Component formatMessage(Locale locale, MessageType type, MessageKeyProvider key) {
+        TagResolver tags = TagResolver.builder()
+                .resolver(formatters.getOrDefault(type, defaultFormatter))
+                .resolver(new LangPlaceholder(this, locale)).build();
+
+        return miniMessage.deserialize("<c1>" + getMessage(locale, key), tags);
+    }
+
+    public Component formatMessage(Locale locale, MessageType type, MessageKeyProvider key, TagResolver... replacements) {
+        TagResolver tags = TagResolver.builder()
+                .resolver(formatters.getOrDefault(type, defaultFormatter))
+                .resolver(new LangPlaceholder(this, locale))
+                .resolvers(replacements).build();
+
+        return miniMessage.deserialize("<c1>" + getMessage(locale, key), tags);
+    }
+
+    public Component formatMessage(IT issuerArg, MessageType type, MessageKeyProvider key) {
+        return formatMessage(getCommandIssuer(issuerArg), type, key);
+    }
+
+    public Component formatMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key) {
+        TagResolver tags = TagResolver.builder()
+                .resolver(formatters.getOrDefault(type, defaultFormatter))
+                .resolver(new LangPlaceholder(this, issuer)).build();
+
+        return miniMessage.deserialize("<c1>" + getMessage(issuer, key), tags);
+    }
+
+    public Component formatMessage(IT issuerArg, MessageType type, MessageKeyProvider key, TagResolver... replacements) {
+        return formatMessage(getCommandIssuer(issuerArg), type, key, replacements);
+    }
+
+    public Component formatMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, TagResolver... replacements) {
         TagResolver tags = TagResolver.builder()
                 .resolver(formatters.getOrDefault(type, defaultFormatter))
                 .resolver(new LangPlaceholder(this, issuer))
                 .resolvers(replacements).build();
 
-        issuer.sendMessage(miniMessage.deserialize("<c1>" + getMessage(issuer, key), tags));
+        return miniMessage.deserialize("<c1>" + getMessage(issuer, key), tags);
     }
 
     public String getMessage(CommandIssuer issuer, MessageKeyProvider key) {
         return getLocales().getMessage(issuer, key.getMessageKey());
+    }
+
+    public String getMessage(Locale locale, MessageKeyProvider key) {
+        return getLocales().getMessage(locale, key.getMessageKey());
     }
 
     public void onLocaleChange(IssuerLocaleChangedCallback<I> onChange) {

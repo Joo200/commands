@@ -8,20 +8,29 @@ import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Locale;
 
 public class LangPlaceholder implements TagResolver {
     public static final String LANG = "lang";
 
     private final CommandManager<?,?,?,?> manager;
     private final CommandIssuer issuer;
+    private final Locale locale;
 
     public LangPlaceholder(CommandManager<?,?,?,?> manager, CommandIssuer issuer) {
         this.manager = manager;
         this.issuer = issuer;
+        this.locale = null;
+    }
+
+    public LangPlaceholder(CommandManager<?,?,?,?> manager, Locale locale) {
+        this.manager = manager;
+        this.locale = locale;
+        this.issuer = null;
     }
 
     @Override
@@ -33,8 +42,12 @@ public class LangPlaceholder implements TagResolver {
         String value;
         if (arg.startsWith("%")) {
             value = manager.getCommandReplacements().getReplacement(arg.substring(1));
-        } else {
+        } else if (issuer != null) {
             value = manager.getMessage(issuer, MessageKey.of(arg));
+        } else if (locale != null) {
+            value = manager.getMessage(locale, MessageKey.of(arg));
+        } else {
+            value = manager.getMessage(manager.getLocales().getDefaultLocale(), MessageKey.of(arg));
         }
         return Tag.preProcessParsed(value);
     }
