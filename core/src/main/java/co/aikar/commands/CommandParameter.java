@@ -46,7 +46,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class CommandParameter<CEC extends CommandExecutionContext<CEC, ? extends CommandIssuer>> {
+public class CommandParameter<CEC extends CommandExecutionContext> {
     private final Parameter parameter;
     private final Class<?> type;
     private final String name;

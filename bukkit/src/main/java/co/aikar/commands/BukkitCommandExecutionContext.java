@@ -29,14 +29,15 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Map;
 
-public class BukkitCommandExecutionContext extends CommandExecutionContext<BukkitCommandExecutionContext, BukkitCommandIssuer> {
-    BukkitCommandExecutionContext(RegisteredCommand cmd, CommandParameter param, BukkitCommandIssuer sender, List<String> args,
+public class BukkitCommandExecutionContext extends CommandExecutionContext {
+    BukkitCommandExecutionContext(RegisteredCommand cmd, CommandParameter param, CommandIssuer sender, List<String> args,
                                   int index, Map<String, Object> passedArgs) {
         super(cmd, param, sender, args, index, passedArgs);
     }
 
     public CommandSender getSender() {
-        return this.issuer.getIssuer();
+        if (this.issuer.audience() instanceof CommandSender sender) return sender;
+        return null;
     }
 
     /**
@@ -44,6 +45,7 @@ public class BukkitCommandExecutionContext extends CommandExecutionContext<Bukki
      * @return
      */
     public Player getPlayer() {
-        return this.issuer.getPlayer();
+        if (this.issuer.audience() instanceof Player sender) return sender;
+        return null;
     }
 }

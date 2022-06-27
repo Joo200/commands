@@ -42,7 +42,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class VelocityCommandManager extends
-        CommandManager<CommandSource, VelocityCommandIssuer, VelocityCommandExecutionContext, VelocityConditionContext> {
+        CommandManager<CommandSource, VelocityCommandExecutionContext, VelocityConditionContext> {
 
     protected final ProxyServer proxy;
     protected final PluginContainer plugin;
@@ -166,11 +166,11 @@ public class VelocityCommandManager extends
     }
 
     @Override
-    public VelocityCommandIssuer getCommandIssuer(Object issuer) {
-        if (!(issuer instanceof CommandSource)) {
+    public CommandIssuer getCommandIssuer(Object issuer) {
+        if (!(issuer instanceof CommandSource source)) {
             throw new IllegalArgumentException(issuer.getClass().getName() + " is not a Command Issuer.");
         }
-        return new VelocityCommandIssuer(this, (CommandSource) issuer);
+        return new CommandIssuer(this, source, source instanceof Player, source::hasPermission);
     }
 
     @Override
@@ -185,12 +185,12 @@ public class VelocityCommandManager extends
 
     @Override
     public VelocityCommandExecutionContext createCommandContext(RegisteredCommand command, CommandParameter parameter, CommandIssuer sender, List<String> args, int i, Map<String, Object> passedArgs) {
-        return new VelocityCommandExecutionContext(command, parameter, (VelocityCommandIssuer) sender, args, i, passedArgs);
+        return new VelocityCommandExecutionContext(command, parameter, sender, args, i, passedArgs);
     }
 
     @Override
     public CommandCompletionContext createCompletionContext(RegisteredCommand command, CommandIssuer sender, String input, String config, String[] args) {
-        return new VelocityCommandCompletionContext(command, (VelocityCommandIssuer) sender, input, config, args);
+        return new VelocityCommandCompletionContext(command, sender, input, config, args);
     }
 
     @Override
@@ -200,7 +200,7 @@ public class VelocityCommandManager extends
 
     @Override
     public VelocityConditionContext createConditionContext(CommandIssuer issuer, String config) {
-        return new VelocityConditionContext((VelocityCommandIssuer) issuer, config);
+        return new VelocityConditionContext(issuer, config);
     }
 
     @Override

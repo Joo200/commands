@@ -33,4 +33,4 @@ import co.aikar.commands.CommandIssuer;
  * @see IssuerAwareContextResolver
  */
 @Deprecated
-public interface SenderAwareContextResolver<T, C extends CommandExecutionContext<?, ? extends CommandIssuer>> extends IssuerAwareContextResolver <T, C> {}
+public interface SenderAwareContextResolver<T, C extends CommandExecutionContext> extends IssuerAwareContextResolver <T, C> {}

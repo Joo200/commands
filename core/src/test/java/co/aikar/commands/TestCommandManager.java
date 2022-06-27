@@ -37,13 +37,12 @@ import java.util.logging.Logger;
 
 public class TestCommandManager extends CommandManager<
         TestCommandSender,
-        TestCommandIssuer,
         TestCommandExecutionContext,
         TestConditionContext> {
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private final Map<String, TestRootCommand> commands = new HashMap<>();
-    private final CommandCompletions<CommandCompletionContext<TestCommandIssuer>> completions = new CommandCompletions<>(this);
+    private final CommandCompletions<CommandCompletionContext> completions = new CommandCompletions<>(this);
 
     protected TestCommandContexts contexts;
     protected Locales locales;

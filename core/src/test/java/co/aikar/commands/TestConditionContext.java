@@ -23,7 +23,7 @@
 
 package co.aikar.commands;
 
-public class TestConditionContext extends ConditionContext<TestCommandIssuer> {
+public class TestConditionContext extends ConditionContext {
     public TestConditionContext(TestCommandIssuer issuer, String config) {
         super(issuer, config);
     }

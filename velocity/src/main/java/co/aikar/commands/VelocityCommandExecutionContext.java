@@ -6,17 +6,19 @@ import java.util.Map;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 
-public class VelocityCommandExecutionContext extends CommandExecutionContext<VelocityCommandExecutionContext, VelocityCommandIssuer> {
+public class VelocityCommandExecutionContext extends CommandExecutionContext {
 
-    VelocityCommandExecutionContext(RegisteredCommand cmd, CommandParameter param, VelocityCommandIssuer sender, List<String> args, int index, Map<String, Object> passedArgs) {
+    VelocityCommandExecutionContext(RegisteredCommand cmd, CommandParameter param, CommandIssuer sender, List<String> args, int index, Map<String, Object> passedArgs) {
         super(cmd, param, sender, args, index, passedArgs);
     }
 
     public CommandSource getSender() {
-        return this.issuer.getIssuer();
+        if (this.getIssuer().audience() instanceof CommandSource source) return source;
+        return null;
     }
 
     public Player getPlayer() {
-        return this.issuer.getPlayer();
+        if (this.getIssuer().audience() instanceof Player source) return source;
+        return null;
     }
 }

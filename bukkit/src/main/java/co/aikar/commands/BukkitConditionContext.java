@@ -26,16 +26,22 @@ package co.aikar.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class BukkitConditionContext extends ConditionContext<BukkitCommandIssuer> {
-    BukkitConditionContext(BukkitCommandIssuer issuer, String config) {
+public class BukkitConditionContext extends ConditionContext {
+    BukkitConditionContext(CommandIssuer issuer, String config) {
         super(issuer, config);
     }
 
     public CommandSender getSender() {
-        return getIssuer().getIssuer();
+        if (this.getIssuer().audience() instanceof CommandSender sender) return sender;
+        return null;
     }
 
+    /**
+     * Returns the Player object if this Issuer is a Player
+     * @return
+     */
     public Player getPlayer() {
-        return getIssuer().getPlayer();
+        if (this.getIssuer().audience() instanceof Player sender) return sender;
+        return null;
     }
 }

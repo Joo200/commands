@@ -25,83 +25,95 @@ package co.aikar.commands;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.UUID;
+import java.util.function.Predicate;
 
-public interface CommandIssuer {
-    /**
-     * Gets the issuer in the platforms native object
-     * @param <T>
-     * @return
-     */
-    <T> T getIssuer();
+public class CommandIssuer implements ForwardingAudience {
+    private final Audience audience;
+    private final CommandManager<?,?,?> manager;
+    private final boolean isPlayer;
+    private final Predicate<String> hasPermission;
 
-    CommandManager<?,?,?,?> getManager();
+    public CommandIssuer(CommandManager<?,?,?> manager, Audience audience, boolean isPlayer, Predicate<String> hasPermission) {
+        this.manager = manager;
+        this.audience = audience;
+        this.isPlayer = isPlayer;
+        this.hasPermission = hasPermission;
+    }
 
     /**
      * Is this issue a player, or server/console sender
      * @return
      */
-    boolean isPlayer();
-
-    /**
-     * Send the Command Issuer a message
-     * @param message
-     */
-    default void sendMessage(String message) {
-        getManager().sendMessage(this, MessageType.INFO, MessageKeys.INFO_MESSAGE, Placeholder.parsed("message", message));
+    public boolean isPlayer() {
+        return this.isPlayer;
     }
-
-    /**
-     * Send the component to the issur
-     *
-     * @param component the message
-     */
-    void sendMessage(Component component);
 
     /**
      * @return the unique id of that issuer
      */
-    @NotNull UUID getUniqueId();
+    public UUID getUniqueId() {
+        return audience.get(Identity.UUID).orElse(null);
+    }
 
     /**
      * @return the display name of the issuer
      */
-    @NotNull String getUsername();
+    public String getUsername() {
+        return audience.get(Identity.NAME).orElse(null);
+    }
+
+    public CommandManager<?, ?, ?> getManager() {
+        return manager;
+    }
 
     /**
      * Has permission node
      * @param permission
      * @return
      */
-    boolean hasPermission(String permission);
+    public boolean hasPermission(String permission) {
+        return hasPermission.test(permission);
+    }
 
-    default void sendError(MessageKeyProvider key, TagResolver... replacements) {
+    public void sendError(MessageKeyProvider key, TagResolver... replacements) {
         sendMessage(MessageType.ERROR, key.getMessageKey(), replacements);
     }
-    default void sendSyntax(MessageKeyProvider key, TagResolver... replacements) {
+    public void sendSyntax(MessageKeyProvider key, TagResolver... replacements) {
         sendMessage(MessageType.SYNTAX, key.getMessageKey(), replacements);
     }
-    default void sendInfo(MessageKeyProvider key, TagResolver... replacements) {
+    public void sendInfo(MessageKeyProvider key, TagResolver... replacements) {
         sendMessage(MessageType.INFO, key.getMessageKey(), replacements);
     }
-    default void sendError(MessageKey key, TagResolver... replacements) {
+    public void sendError(MessageKey key, TagResolver... replacements) {
         sendMessage(MessageType.ERROR, key, replacements);
     }
-    default void sendSyntax(MessageKey key, TagResolver... replacements) {
+    public void sendSyntax(MessageKey key, TagResolver... replacements) {
         sendMessage(MessageType.SYNTAX, key, replacements);
     }
-    default void sendInfo(MessageKey key, TagResolver... replacements) {
+    public void sendInfo(MessageKey key, TagResolver... replacements) {
         sendMessage(MessageType.INFO, key, replacements);
     }
-    default void sendMessage(MessageType type, MessageKeyProvider key, TagResolver... replacements) {
+    public void sendMessage(MessageType type, MessageKeyProvider key, TagResolver... replacements) {
         sendMessage(type, key.getMessageKey(), replacements);
     }
-    default void sendMessage(MessageType type, MessageKey key, TagResolver... replacements) {
-        getManager().sendMessage(this, type, key, replacements);
+    public void sendMessage(MessageType type, MessageKey key, TagResolver... replacements) {
+        manager.sendMessage(this, type, key, replacements);
+    }
+
+    @Override
+    public @NotNull Iterable<? extends Audience> audiences() {
+        return Collections.singleton(audience);
+    }
+
+    public @NotNull Audience audience() {
+        return audience;
     }
 }

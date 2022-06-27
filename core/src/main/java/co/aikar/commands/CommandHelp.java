@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("WeakerAccess")
 public class CommandHelp {
-    private final CommandManager manager;
+    private final CommandManager<?,?,?> manager;
     private final CommandIssuer issuer;
     private final List<HelpEntry> helpEntries = new ArrayList<>();
     private final String commandName;
@@ -50,7 +50,7 @@ public class CommandHelp {
     private int totalPages;
     private boolean lastPage;
 
-    public CommandHelp(CommandManager manager, RootCommand rootCommand, CommandIssuer issuer) {
+    public CommandHelp(CommandManager<?,?,?> manager, RootCommand rootCommand, CommandIssuer issuer) {
         this.manager = manager;
         this.issuer = issuer;
         this.perPage = manager.defaultHelpPerPage;

@@ -32,24 +32,23 @@ import java.util.Map;
 
 @SuppressWarnings("BooleanMethodIsAlwaysInverted") // No IDEA, you are wrong
 public class CommandConditions<
-        I extends CommandIssuer,
-        CEC extends CommandExecutionContext<CEC, I>,
-        CC extends ConditionContext<I>
+        CEC extends CommandExecutionContext,
+        CC extends ConditionContext
         > {
     private CommandManager manager;
-    private Map<String, Condition<I>> conditions = new HashMap<>();
-    private Table<Class<?>, String, ParameterCondition<?, ?, ?>> paramConditions = new Table<>();
+    private Map<String, Condition> conditions = new HashMap<>();
+    private Table<Class<?>, String, ParameterCondition<?, ?>> paramConditions = new Table<>();
 
     CommandConditions(CommandManager manager) {
         this.manager = manager;
     }
 
-    public Condition<I> addCondition(@NotNull String id, @NotNull Condition<I> handler) {
+    public Condition addCondition(@NotNull String id, @NotNull Condition handler) {
         return this.conditions.put(id.toLowerCase(Locale.ENGLISH), handler);
     }
 
     public <P> ParameterCondition addCondition(Class<P> clazz, @NotNull String id,
-                                               @NotNull ParameterCondition<P, CEC, I> handler) {
+                                               @NotNull ParameterCondition<P, CEC> handler) {
         return this.paramConditions.put(clazz, id.toLowerCase(Locale.ENGLISH), handler);
     }
 
@@ -78,7 +77,7 @@ public class CommandConditions<
         for (String cond : ACFPatterns.PIPE.split(conditions)) {
             String[] split = ACFPatterns.COLON.split(cond, 2);
             String id = split[0].toLowerCase(Locale.ENGLISH);
-            Condition<I> condition = this.conditions.get(id);
+            Condition condition = this.conditions.get(id);
             if (condition == null) {
                 RegisteredCommand cmd = context.getRegisteredCommand();
                 this.manager.log(LogLevel.ERROR, "Could not find command condition " + id + " for " + cmd.method.getName());
@@ -98,7 +97,7 @@ public class CommandConditions<
             return;
         }
         conditions = this.manager.getCommandReplacements().replace(conditions);
-        I issuer = execContext.getIssuer();
+        CommandIssuer issuer = execContext.getIssuer();
         for (String cond : ACFPatterns.PIPE.split(conditions)) {
             String[] split = ACFPatterns.COLON.split(cond, 2);
             ParameterCondition condition;
@@ -128,11 +127,11 @@ public class CommandConditions<
         }
     }
 
-    public interface Condition<I extends CommandIssuer> {
-        void validateCondition(ConditionContext<I> context) throws InvalidCommandArgument;
+    public interface Condition {
+        void validateCondition(ConditionContext context) throws InvalidCommandArgument;
     }
 
-    public interface ParameterCondition<P, CEC extends CommandExecutionContext, I extends CommandIssuer> {
-        void validateCondition(ConditionContext<I> context, CEC execContext, P value) throws InvalidCommandArgument;
+    public interface ParameterCondition<P, CEC extends CommandExecutionContext> {
+        void validateCondition(ConditionContext context, CEC execContext, P value) throws InvalidCommandArgument;
     }
 }

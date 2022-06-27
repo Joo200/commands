@@ -30,17 +30,17 @@ import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings({"WeakerAccess", "unchecked"})
-public class CommandExecutionContext<CEC extends CommandExecutionContext, I extends CommandIssuer> {
+public class CommandExecutionContext {
     private final RegisteredCommand cmd;
     private final CommandParameter param;
-    protected final I issuer;
+    protected final CommandIssuer issuer;
     private final List<String> args;
     private final int index;
     private final Map<String, Object> passedArgs;
     private final Map<String, String> flags;
     private final CommandManager manager;
 
-    CommandExecutionContext(RegisteredCommand cmd, CommandParameter param, I sender, List<String> args,
+    CommandExecutionContext(RegisteredCommand cmd, CommandParameter param, CommandIssuer sender, List<String> args,
                             int index, Map<String, Object> passedArgs) {
         this.cmd = cmd;
         this.manager = cmd.scope.manager;
@@ -208,7 +208,7 @@ public class CommandExecutionContext<CEC extends CommandExecutionContext, I exte
         return this.param.getParameter();
     }
 
-    public I getIssuer() {
+    public CommandIssuer getIssuer() {
         return this.issuer;
     }
 

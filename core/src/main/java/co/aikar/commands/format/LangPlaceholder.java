@@ -17,17 +17,17 @@ import java.util.Locale;
 public class LangPlaceholder implements TagResolver {
     public static final String LANG = "lang";
 
-    private final CommandManager<?,?,?,?> manager;
+    private final CommandManager<?,?,?> manager;
     private final CommandIssuer issuer;
     private final Locale locale;
 
-    public LangPlaceholder(CommandManager<?,?,?,?> manager, CommandIssuer issuer) {
+    public LangPlaceholder(CommandManager<?,?,?> manager, CommandIssuer issuer) {
         this.manager = manager;
         this.issuer = issuer;
         this.locale = null;
     }
 
-    public LangPlaceholder(CommandManager<?,?,?,?> manager, Locale locale) {
+    public LangPlaceholder(CommandManager<?,?,?> manager, Locale locale) {
         this.manager = manager;
         this.locale = locale;
         this.issuer = null;

@@ -27,7 +27,6 @@ import co.aikar.commands.apachecommonslang.ApacheCommonsExceptionUtil;
 import co.aikar.timings.lib.MCTiming;
 import co.aikar.timings.lib.TimingManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
@@ -46,7 +45,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -68,7 +66,6 @@ import java.util.regex.Pattern;
 @SuppressWarnings("WeakerAccess")
 public class BukkitCommandManager extends CommandManager<
         CommandSender,
-        BukkitCommandIssuer,
         BukkitCommandExecutionContext,
         BukkitConditionContext
         > {
@@ -107,14 +104,6 @@ public class BukkitCommandManager extends CommandManager<
             this.mcMinorVersion = -1;
             this.mcPatchVersion = -1;
         }
-
-        Bukkit.getHelpMap().registerHelpTopicFactory(BukkitRootCommand.class, command -> {
-            if (hasUnstableAPI("help")) {
-                return new ACFBukkitHelpTopic(this, (BukkitRootCommand) command);
-            } else {
-                return new GenericCommandHelpTopic(command);
-            }
-        });
 
         Bukkit.getPluginManager().registerEvents(new ACFBukkitListener(this, plugin), plugin);
 
@@ -347,21 +336,21 @@ public class BukkitCommandManager extends CommandManager<
     }
 
     @Override
-    public BukkitCommandIssuer getCommandIssuer(Object issuer) {
-        if (!(issuer instanceof CommandSender)) {
+    public CommandIssuer getCommandIssuer(Object issuer) {
+        if (!(issuer instanceof CommandSender sender)) {
             throw new IllegalArgumentException(issuer.getClass().getName() + " is not a Command Issuer.");
         }
-        return new BukkitCommandIssuer(this, (CommandSender) issuer);
+        return new CommandIssuer(this, sender, sender instanceof Player, sender::hasPermission);
     }
 
     @Override
     public BukkitCommandExecutionContext createCommandContext(RegisteredCommand command, CommandParameter parameter, CommandIssuer sender, List<String> args, int i, Map<String, Object> passedArgs) {
-        return new BukkitCommandExecutionContext(command, parameter, (BukkitCommandIssuer) sender, args, i, passedArgs);
+        return new BukkitCommandExecutionContext(command, parameter, sender, args, i, passedArgs);
     }
 
     @Override
     public BukkitCommandCompletionContext createCompletionContext(RegisteredCommand command, CommandIssuer sender, String input, String config, String[] args) {
-        return new BukkitCommandCompletionContext(command, (BukkitCommandIssuer) sender, input, config, args);
+        return new BukkitCommandCompletionContext(command, sender, input, config, args);
     }
 
     @Override
@@ -371,7 +360,7 @@ public class BukkitCommandManager extends CommandManager<
 
     @Override
     public BukkitConditionContext createConditionContext(CommandIssuer issuer, String config) {
-        return new BukkitConditionContext((BukkitCommandIssuer) issuer, config);
+        return new BukkitConditionContext(issuer, config);
     }
 
 

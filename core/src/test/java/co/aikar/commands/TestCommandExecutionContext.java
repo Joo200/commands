@@ -26,7 +26,7 @@ package co.aikar.commands;
 import java.util.List;
 import java.util.Map;
 
-public class TestCommandExecutionContext extends CommandExecutionContext<TestCommandExecutionContext, TestCommandIssuer> {
+public class TestCommandExecutionContext extends CommandExecutionContext {
 
     public TestCommandExecutionContext(RegisteredCommand cmd, CommandParameter param, TestCommandIssuer sender, List<String> args, int index, Map<String, Object> passedArgs) {
         super(cmd, param, sender, args, index, passedArgs);

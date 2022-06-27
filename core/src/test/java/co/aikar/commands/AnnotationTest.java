@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AnnotationTest {
 
-    private final CommandManager<?, ?, ?, ?> manager = Mockito.mock(CommandManager.class);
+    private final CommandManager<?, ?, ?> manager = Mockito.mock(CommandManager.class);
     private Annotations<?> annotations = new Annotations<>(this.manager);
 
     @Test

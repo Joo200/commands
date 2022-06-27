@@ -29,15 +29,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class CommandCompletionContext<I extends CommandIssuer> {
+public class CommandCompletionContext {
     private final RegisteredCommand command;
-    protected final I issuer;
+    protected final CommandIssuer issuer;
     private final String input;
     private final String config;
     private final Map<String, String> configs = new HashMap<>();
     private final List<String> args;
 
-    CommandCompletionContext(RegisteredCommand command, I issuer, String input, String config, String[] args) {
+    CommandCompletionContext(RegisteredCommand command, CommandIssuer issuer, String input, String config, String[] args) {
         this.command = command;
         this.issuer = issuer;
         this.input = input;

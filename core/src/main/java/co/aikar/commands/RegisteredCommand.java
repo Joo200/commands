@@ -55,7 +55,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("WeakerAccess")
-public class RegisteredCommand<CEC extends CommandExecutionContext<CEC, ? extends CommandIssuer>> {
+public class RegisteredCommand<CEC extends CommandExecutionContext> {
     final BaseCommand scope; public BaseCommand getScope() { return scope; }
     final Method method;
     final CommandParameter<CEC>[] parameters;

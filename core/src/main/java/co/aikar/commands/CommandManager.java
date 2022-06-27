@@ -57,9 +57,8 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings("WeakerAccess")
 public abstract class CommandManager<
         IT,
-        I extends CommandIssuer,
-        CEC extends CommandExecutionContext<CEC, I>,
-        CC extends ConditionContext<I>
+        CEC extends CommandExecutionContext,
+        CC extends ConditionContext
         > {
 
     /**
@@ -73,14 +72,14 @@ public abstract class CommandManager<
     });
     protected Map<String, RootCommand> rootCommands = new HashMap<>();
     protected final CommandReplacements replacements = new CommandReplacements(this);
-    protected final CommandConditions<I, CEC, CC> conditions = new CommandConditions<>(this);
+    protected final CommandConditions<CEC, CC> conditions = new CommandConditions<>(this);
     protected ExceptionHandler defaultExceptionHandler = null;
     boolean logUnhandledExceptions = true;
     protected Table<Class<?>, String, Object> dependencies = new Table<>();
     protected CommandHelpFormatter helpFormatter = new CommandHelpFormatter(this);
 
     protected boolean usePerIssuerLocale = false;
-    protected List<IssuerLocaleChangedCallback<I>> localeChangedCallbacks = new ArrayList<>();
+    protected List<IssuerLocaleChangedCallback> localeChangedCallbacks = new ArrayList<>();
     protected Set<Locale> supportedLanguages = new HashSet<>(Arrays.asList(Locales.ENGLISH, Locales.DUTCH, Locales.GERMAN, Locales.SPANISH, Locales.FRENCH, Locales.CZECH, Locales.PORTUGUESE, Locales.SWEDISH, Locales.NORWEGIAN_BOKMAAL, Locales.NORWEGIAN_NYNORSK, Locales.RUSSIAN, Locales.BULGARIAN, Locales.HUNGARIAN, Locales.TURKISH, Locales.JAPANESE, Locales.CHINESE, Locales.SIMPLIFIED_CHINESE, Locales.TRADITIONAL_CHINESE));
 
     protected int defaultHelpPerPage = 10;
@@ -137,7 +136,7 @@ public abstract class CommandManager<
         this.defaultFormatter = defaultFormatter;
     }
 
-    public CommandConditions<I, CEC, CC> getCommandConditions() {
+    public CommandConditions<CEC, CC> getCommandConditions() {
         return conditions;
     }
 
@@ -258,8 +257,7 @@ public abstract class CommandManager<
 
     public abstract boolean isCommandIssuer(Class<?> type);
 
-    // TODO: Change this to IT if we make a breaking change
-    public abstract I getCommandIssuer(Object issuer);
+    public abstract CommandIssuer getCommandIssuer(Object issuer);
 
     public abstract RootCommand createRootCommand(String cmd);
 
@@ -480,11 +478,11 @@ public abstract class CommandManager<
         return getLocales().getMessage(locale, key.getMessageKey());
     }
 
-    public void onLocaleChange(IssuerLocaleChangedCallback<I> onChange) {
+    public void onLocaleChange(IssuerLocaleChangedCallback onChange) {
         localeChangedCallbacks.add(onChange);
     }
 
-    public void notifyLocaleChange(I issuer, Locale oldLocale, Locale newLocale) {
+    public void notifyLocaleChange(CommandIssuer issuer, Locale oldLocale, Locale newLocale) {
         localeChangedCallbacks.forEach(cb -> {
             try {
                 cb.onIssuerLocaleChange(issuer, oldLocale, newLocale);
@@ -495,7 +493,7 @@ public abstract class CommandManager<
     }
 
     public Locale setIssuerLocale(IT issuer, Locale locale) {
-        I commandIssuer = getCommandIssuer(issuer);
+        CommandIssuer commandIssuer = getCommandIssuer(issuer);
 
         Locale old = issuersLocale.put(commandIssuer.getUniqueId(), locale);
         if (!Objects.equals(old, locale)) {
@@ -516,11 +514,11 @@ public abstract class CommandManager<
         return getLocales().getDefaultLocale();
     }
 
-    CommandOperationContext<I> createCommandOperationContext(BaseCommand command, CommandIssuer issuer, String commandLabel, String[] args, boolean isAsync) {
+    CommandOperationContext createCommandOperationContext(BaseCommand command, CommandIssuer issuer, String commandLabel, String[] args, boolean isAsync) {
         //noinspection unchecked
-        return new CommandOperationContext<>(
+        return new CommandOperationContext(
                 this,
-                (I) issuer,
+                issuer,
                 command,
                 commandLabel,
                 args,

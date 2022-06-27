@@ -23,7 +23,6 @@
 
 package co.aikar.commands;
 
-import co.aikar.locales.LanguageTable;
 import co.aikar.locales.LocaleManager;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
@@ -39,7 +38,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 
 @SuppressWarnings("WeakerAccess")
 public class Locales {

@@ -3,17 +3,19 @@ package co.aikar.commands;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 
-public class VelocityConditionContext extends ConditionContext <VelocityCommandIssuer> {
-    VelocityConditionContext(VelocityCommandIssuer issuer, String config) {
+public class VelocityConditionContext extends ConditionContext {
+    VelocityConditionContext(CommandIssuer issuer, String config) {
         super(issuer, config);
     }
 
 
     public CommandSource getSender() {
-        return getIssuer().getIssuer();
+        if (this.getIssuer().audience() instanceof CommandSource source) return source;
+        return null;
     }
 
     public Player getPlayer() {
-        return getIssuer().getPlayer();
+        if (this.getIssuer().audience() instanceof Player source) return source;
+        return null;
     }
 }

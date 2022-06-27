@@ -250,21 +250,8 @@ public class ACFBukkitUtil {
         return loc1.getWorld() == loc2.getWorld() && loc1.distance(loc2) <= dist;
     }
 
-    /**
-     * Please move to the CommandIssuer version
-     *
-     * @deprecated
-     */
-    public static Player findPlayerSmart(CommandSender requester, String search) {
-        CommandManager manager = CommandManager.getCurrentCommandManager();
-        if (manager != null) {
-            return findPlayerSmart(manager.getCommandIssuer(requester), search);
-        }
-        throw new IllegalStateException("You may not use the ACFBukkitUtil#findPlayerSmart(CommandSender) async to the command execution.");
-    }
-
     public static Player findPlayerSmart(CommandIssuer issuer, String search) {
-        CommandSender requester = issuer.getIssuer();
+        CommandSender requester = (CommandSender) issuer.audience();
         if (search == null) {
             return null;
         }

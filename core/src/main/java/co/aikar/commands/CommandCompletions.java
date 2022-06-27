@@ -231,7 +231,7 @@ public class CommandCompletions<C extends CommandCompletionContext> {
 
     List<String> getCompletionValues(RegisteredCommand command, CommandIssuer sender, String completion, String[] args, boolean isAsync) {
         if (DEFAULT_ENUM_ID.equals(completion)) {
-            CommandOperationContext<?> ctx = CommandManager.getCurrentCommandOperationContext();
+            CommandOperationContext ctx = CommandManager.getCurrentCommandOperationContext();
             return ctx.enumCompletionValues;
         }
         boolean repeat = completion.startsWith("repeat@");

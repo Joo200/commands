@@ -28,6 +28,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.BlockCommandSender;
@@ -58,7 +59,7 @@ public class BukkitCommandContexts extends CommandContexts<BukkitCommandExecutio
             return new co.aikar.commands.contexts.OnlinePlayer(onlinePlayer.getPlayer());
         });
         registerContext(OnlinePlayer[].class, (c) -> {
-            BukkitCommandIssuer issuer = c.getIssuer();
+            CommandIssuer issuer = c.getIssuer();
             final String search = c.popFirstArg();
             boolean allowMissing = c.hasFlag("allowmissing");
             Set<OnlinePlayer> players = new HashSet<>();
@@ -245,13 +246,26 @@ public class BukkitCommandContexts extends CommandContexts<BukkitCommandExecutio
             }
         });
 
-        if (manager.mcMinorVersion >= 12) {
-            BukkitCommandContexts_1_12.register(this);
-        }
+        registerContext(NamespacedKey.class, c -> {
+            String arg = c.popFirstArg();
+            String[] split = ACFPatterns.COLON.split(arg, 2);
+            if (split.length == 1) {
+                String namespace = c.getFlagValue("namespace", (String) null);
+                if (namespace == null) {
+                    return NamespacedKey.minecraft(split[0]);
+                } else {
+                    //noinspection deprecation
+                    return new NamespacedKey(namespace, split[0]);
+                }
+            } else {
+                //noinspection deprecation
+                return new NamespacedKey(split[0], split[1]);
+            }
+        });
     }
 
     @Contract("_,_,false -> !null")
-    OnlinePlayer getOnlinePlayer(BukkitCommandIssuer issuer, String lookup, boolean allowMissing) throws InvalidCommandArgument {
+    OnlinePlayer getOnlinePlayer(CommandIssuer issuer, String lookup, boolean allowMissing) throws InvalidCommandArgument {
         Player player = ACFBukkitUtil.findPlayerSmart(issuer, lookup);
         //noinspection Duplicates
         if (player == null) {

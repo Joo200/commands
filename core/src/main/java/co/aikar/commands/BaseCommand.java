@@ -121,7 +121,7 @@ public abstract class BaseCommand {
     /**
      * The manager this is registered to
      */
-    CommandManager<?, ?, ?, ?> manager = null;
+    CommandManager<?, ?, ?> manager = null;
 
     /**
      * The command which owns this. This may be null if there are no owners.
@@ -572,9 +572,6 @@ public abstract class BaseCommand {
                                 CommandIssuer issuer, String[] args, RegisteredCommand cmd) {
         if (cmd.hasPermission(issuer)) {
             commandOperationContext.setRegisteredCommand(cmd);
-            if (checkPrecommand(commandOperationContext, cmd, issuer, args)) {
-                return;
-            }
             List<String> sargs = Arrays.asList(args);
             cmd.invoke(issuer, sargs, commandOperationContext);
         } else {
@@ -716,45 +713,6 @@ public abstract class BaseCommand {
                 .distinct()
                 .filter(cmd -> cmd != null && (arg.isEmpty() || ApacheCommonsLangUtil.startsWithIgnoreCase(cmd, arg)))
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Executes the precommand and sees whether something is wrong. Ideally, you get false from this.
-     *
-     * @param commandOperationContext The context to use.
-     * @param cmd                     The command executed.
-     * @param issuer                  The issuer who executed the command.
-     * @param args                    The arguments the issuer provided.
-     * @return Whether something went wrong.
-     */
-    private boolean checkPrecommand(CommandOperationContext commandOperationContext, RegisteredCommand cmd, CommandIssuer issuer, String[] args) {
-        Method pre = this.preCommandHandler;
-        if (pre != null) {
-            try {
-                Class<?>[] types = pre.getParameterTypes();
-                Object[] parameters = new Object[pre.getParameterCount()];
-                for (int i = 0; i < parameters.length; i++) {
-                    Class<?> type = types[i];
-                    Object issuerObject = issuer.getIssuer();
-                    if (manager.isCommandIssuer(type) && type.isAssignableFrom(issuerObject.getClass())) {
-                        parameters[i] = issuerObject;
-                    } else if (CommandIssuer.class.isAssignableFrom(type)) {
-                        parameters[i] = issuer;
-                    } else if (RegisteredCommand.class.isAssignableFrom(type)) {
-                        parameters[i] = cmd;
-                    } else if (String[].class.isAssignableFrom((type))) {
-                        parameters[i] = args;
-                    } else {
-                        parameters[i] = null;
-                    }
-                }
-
-                return (boolean) pre.invoke(this, parameters);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                this.manager.log(LogLevel.ERROR, "Exception encountered while command pre-processing", e);
-            }
-        }
-        return false;
     }
 
     /**

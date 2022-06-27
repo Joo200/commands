@@ -23,12 +23,14 @@
 
 package co.aikar.commands;
 
+import net.kyori.adventure.audience.Audience;
+
 import java.util.UUID;
 
 /**
  * Simple command sender. Use with {@link org.mockito.Mockito#spy(Object)} or {@link org.mockito.Spy}.
  */
-public class TestCommandSender {
+public class TestCommandSender implements Audience {
 
     private final UUID uuid = UUID.randomUUID();
 

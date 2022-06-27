@@ -28,19 +28,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class TestCommandIssuer implements CommandIssuer {
+public class TestCommandIssuer extends CommandIssuer {
 
     private final TestCommandManager manager;
     private final TestCommandSender issuer;
 
     public TestCommandIssuer(TestCommandManager manager, TestCommandSender issuer) {
+        super(manager, issuer, false, issuer::hasPermission);
         this.manager = manager;
         this.issuer = issuer;
-    }
-
-    @Override
-    public TestCommandSender getIssuer() {
-        return issuer;
     }
 
     @Override

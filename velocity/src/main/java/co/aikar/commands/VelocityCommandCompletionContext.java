@@ -26,17 +26,19 @@ package co.aikar.commands;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 
-public class VelocityCommandCompletionContext extends CommandCompletionContext<VelocityCommandIssuer> {
+public class VelocityCommandCompletionContext extends CommandCompletionContext {
 
-    VelocityCommandCompletionContext(RegisteredCommand command, VelocityCommandIssuer issuer, String input, String config, String[] args) {
+    VelocityCommandCompletionContext(RegisteredCommand command, CommandIssuer issuer, String input, String config, String[] args) {
         super(command, issuer, input, config, args);
     }
 
     public CommandSource getSender() {
-        return this.getIssuer().getIssuer();
+        if (this.getIssuer().audience() instanceof CommandSource source) return source;
+        return null;
     }
 
     public Player getPlayer() {
-        return this.issuer.getPlayer();
+        if (this.getIssuer().audience() instanceof Player source) return source;
+        return null;
     }
 }

@@ -31,9 +31,9 @@ import java.util.List;
 
 public class CommandHelpFormatter {
 
-    private final CommandManager manager;
+    private final CommandManager<?,?,?> manager;
 
-    public CommandHelpFormatter(CommandManager manager) {
+    public CommandHelpFormatter(CommandManager<?,?,?> manager) {
         this.manager = manager;
     }
 

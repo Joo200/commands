@@ -26,13 +26,13 @@ package co.aikar.commands;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConditionContext <I extends CommandIssuer> {
+public class ConditionContext {
 
-    private final I issuer;
+    private final CommandIssuer issuer;
     private final String config;
     private final Map<String, String> configs;
 
-    ConditionContext(I issuer, String config) {
+    ConditionContext(CommandIssuer issuer, String config) {
         this.issuer = issuer;
         this.config = config;
         this.configs = new HashMap<>();
@@ -45,7 +45,7 @@ public class ConditionContext <I extends CommandIssuer> {
     }
 
 
-    public I getIssuer() {
+    public CommandIssuer getIssuer() {
         return issuer;
     }
 

@@ -27,6 +27,6 @@ public class TestCommandContexts extends CommandContexts<TestCommandExecutionCon
 
     public TestCommandContexts(CommandManager manager) {
         super(manager);
-        registerIssuerOnlyContext(TestCommandSender.class, c -> c.getIssuer().getIssuer());
+        registerIssuerOnlyContext(TestCommandSender.class, c -> (TestCommandSender) c.getIssuer().audience());
     }
 }
