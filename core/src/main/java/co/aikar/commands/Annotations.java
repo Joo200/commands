@@ -33,7 +33,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 @SuppressWarnings("TypeParameterExplicitlyExtendsObject")
-public class Annotations <M extends CommandManager> extends AnnotationLookups {
+public class Annotations extends AnnotationLookups {
 
     public static final int NOTHING = 0;
     public static final int REPLACEMENTS = 1;
@@ -42,12 +42,12 @@ public class Annotations <M extends CommandManager> extends AnnotationLookups {
     public static final int NO_EMPTY = 1 << 3;
     public static final int DEFAULT_EMPTY = 1 << 4;
 
-    private final M manager;
+    private final CommandManager<?,?,?> manager;
 
     private final Map<Class<? extends Annotation>, Method> valueMethods = new IdentityHashMap<>();
     private final Map<Class<? extends Annotation>, Void> noValueAnnotations = new IdentityHashMap<>();
 
-    Annotations(M manager) {
+    Annotations(CommandManager<?,?,?> manager) {
         this.manager = manager;
     }
 

@@ -229,4 +229,9 @@ public class VelocityCommandManager extends
     public String getCommandPrefix(CommandIssuer issuer) {
         return issuer.isPlayer() ? "/" : "";
     }
+
+    @Override
+    public Collection<? extends CommandSource> getAllPlayers() {
+        return proxy.getAllPlayers();
+    }
 }

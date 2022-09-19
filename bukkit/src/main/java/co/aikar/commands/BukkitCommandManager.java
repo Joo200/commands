@@ -394,4 +394,9 @@ public class BukkitCommandManager extends CommandManager<
         }
         return super.handleUncaughtException(scope, registeredCommand, sender, args, t);
     }
+
+    @Override
+    public Collection<? extends CommandSender> getAllPlayers() {
+        return Bukkit.getOnlinePlayers();
+    }
 }

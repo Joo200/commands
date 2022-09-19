@@ -160,4 +160,9 @@ public class TestCommandManager extends CommandManager<
         }
         rootCommand.execute(this.getCommandIssuer(sender), cmd, args);
     }
+
+    @Override
+    public Collection<TestCommandSender> getAllPlayers() {
+        return Collections.emptyList();
+    }
 }

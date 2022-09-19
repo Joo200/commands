@@ -88,13 +88,13 @@ public abstract class CommandManager<
 
     protected Map<UUID, Locale> issuersLocale = new ConcurrentHashMap<>();
 
-    private Set<String> unstableAPIs = new HashSet<>();
+    private final Set<String> unstableAPIs = new HashSet<>();
 
-    private Annotations annotations = new Annotations<>(this);
-    private CommandRouter router = new CommandRouter(this);
+    private final Annotations annotations = new Annotations(this);
+    private final CommandRouter router = new CommandRouter(this);
 
     private TagResolver defaultFormatter;
-    private Map<MessageType, TagResolver> formatters = new HashMap<>();
+    private final Map<MessageType, TagResolver> formatters = new HashMap<>();
 
     public CommandManager() {
         defaultFormatter = MessageFormatter.DEFAULT;
@@ -394,6 +394,15 @@ public abstract class CommandManager<
             result = defaultExceptionHandler.execute(scope, registeredCommand, sender, args, t);
         }
         return result;
+    }
+
+    public abstract Collection<? extends IT> getAllPlayers();
+    public void broadcastMessage(MessageKeyProvider key) {
+        getAllPlayers().forEach(it -> sendMessage(it, key));
+    }
+
+    public void broadcastMessage(MessageKeyProvider key, TagResolver... resolvers) {
+        getAllPlayers().forEach(it -> sendMessage(it, key, resolvers));
     }
 
     public void sendMessage(IT issuerArg, MessageKeyProvider key) {
