@@ -27,7 +27,7 @@ import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
-public abstract class InvalidRuntimeException extends RuntimeException {
+public class InvalidRuntimeException extends RuntimeException {
     final MessageKey key;
     final TagResolver[] replacements;
 
