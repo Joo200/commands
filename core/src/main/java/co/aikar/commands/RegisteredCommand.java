@@ -182,9 +182,9 @@ public class RegisteredCommand<CEC extends CommandExecutionContext> {
                 commandHelp.setSearch(showHelp.searchArgs == null ? args : showHelp.searchArgs);
             }
             commandHelp.showHelp(sender);
-        } else if (e instanceof InvalidCommandArgument invalidCommandArg) {
-            manager.showInvalidRuntime(sender, invalidCommandArg);
-            if (invalidCommandArg.showSyntax) {
+        } else if (e instanceof InvalidRuntimeException runtimeException) {
+            manager.showInvalidRuntime(sender, runtimeException);
+            if (runtimeException instanceof InvalidCommandArgument i && i.showSyntax) {
                 scope.showSyntax(sender, this);
             }
         } else {
