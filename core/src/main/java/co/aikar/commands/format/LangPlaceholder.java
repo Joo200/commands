@@ -21,8 +21,15 @@ public class LangPlaceholder implements TagResolver {
     private final CommandIssuer issuer;
     private final Locale locale;
 
+    @Deprecated
     public LangPlaceholder(CommandManager<?,?,?> manager, CommandIssuer issuer) {
-        this.manager = manager;
+        this.manager = issuer.getManager();
+        this.issuer = issuer;
+        this.locale = null;
+    }
+
+    public LangPlaceholder(CommandIssuer issuer) {
+        this.manager = issuer.getManager();
         this.issuer = issuer;
         this.locale = null;
     }
