@@ -43,6 +43,7 @@ public enum MessageKeys implements MessageKeyProvider {
     INFO_MESSAGE,
     PLEASE_SPECIFY_ONE_OF,
     MUST_BE_A_NUMBER,
+    MUST_BE_BOOLEAN,
     MUST_BE_MIN_LENGTH,
     MUST_BE_MAX_LENGTH,
     PLEASE_SPECIFY_AT_LEAST,

@@ -457,7 +457,7 @@ public final class ACFUtil {
         return null;
     }
 
-    public static boolean isTruthy(String test) {
+    public static boolean asBoolean(String test) {
         switch (test) {
             case "t":
             case "true":
@@ -465,9 +465,21 @@ public final class ACFUtil {
             case "y":
             case "yes":
             case "1":
+            case "ja":
+            case "an":
+            case "ein":
                 return true;
+            case "f":
+            case "false":
+            case "off":
+            case "n":
+            case "no":
+            case "0":
+            case "nein":
+            case "aus":
+                return false;
         }
-        return false;
+        throw new InvalidCommandArgument(MessageKeys.MUST_BE_BOOLEAN);
     }
 
 

@@ -155,8 +155,8 @@ public class CommandContexts<R extends CommandExecutionContext> {
                 throw new InvalidCommandArgument(MessageKeys.MUST_BE_A_NUMBER, Placeholder.parsed("num", numberStr));
             }
         });
-        registerContext(Boolean.class, (c) -> ACFUtil.isTruthy(c.popFirstArg()));
-        registerContext(boolean.class, (c) -> ACFUtil.isTruthy(c.popFirstArg()));
+        registerContext(Boolean.class, (c) -> ACFUtil.asBoolean(c.popFirstArg()));
+        registerContext(boolean.class, (c) -> ACFUtil.asBoolean(c.popFirstArg()));
         registerContext(char.class, c -> {
             String s = c.popFirstArg();
             if (s.length() > 1) {

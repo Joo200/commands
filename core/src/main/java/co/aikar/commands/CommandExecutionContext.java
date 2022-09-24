@@ -165,7 +165,7 @@ public class CommandExecutionContext {
         if (val == null) {
             return def;
         }
-        return ACFUtil.isTruthy(val);
+        return ACFUtil.asBoolean(val);
     }
 
     public Double getFlagValue(String flag, Number def) {
