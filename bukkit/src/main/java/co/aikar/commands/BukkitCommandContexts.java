@@ -54,10 +54,6 @@ public class BukkitCommandContexts extends CommandContexts<BukkitCommandExecutio
         super(manager);
 
         registerContext(OnlinePlayer.class, c -> getOnlinePlayer(c.getIssuer(), c.popFirstArg(), false));
-        registerContext(co.aikar.commands.contexts.OnlinePlayer.class, c -> {
-            OnlinePlayer onlinePlayer = getOnlinePlayer(c.getIssuer(), c.popFirstArg(), false);
-            return new co.aikar.commands.contexts.OnlinePlayer(onlinePlayer.getPlayer());
-        });
         registerContext(OnlinePlayer[].class, (c) -> {
             CommandIssuer issuer = c.getIssuer();
             final String search = c.popFirstArg();
@@ -96,8 +92,8 @@ public class BukkitCommandContexts extends CommandContexts<BukkitCommandExecutio
             }
             return world;
         });
-        registerIssuerAwareContext(CommandSender.class, BukkitCommandExecutionContext::getSender);
-        registerIssuerAwareContext(Player.class, (c) -> {
+        registerIssuerOnlyContext(CommandSender.class, BukkitCommandExecutionContext::getSender);
+        registerIssuerOnlyContext(Player.class, (c) -> {
             boolean isOptional = c.isOptional();
             CommandSender sender = c.getSender();
             boolean isPlayerSender = sender instanceof Player;

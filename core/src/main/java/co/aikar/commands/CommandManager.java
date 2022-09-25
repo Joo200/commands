@@ -655,10 +655,12 @@ public abstract class CommandManager<
     }
 
     public void showInvalidRuntime(CommandIssuer sender, InvalidRuntimeException invalidCommandArg) {
-        if (invalidCommandArg.key != null) {
+        if (invalidCommandArg.getKey() != null) {
             sender.sendMessage(MessageType.ERROR, invalidCommandArg.key, invalidCommandArg.replacements);
         } else if (invalidCommandArg.getMessage() != null && !invalidCommandArg.getMessage().isEmpty()) {
             sender.sendMessage(MessageType.ERROR, MessageKeys.ERROR_PREFIX, Placeholder.parsed("message", invalidCommandArg.getMessage()));
+        } else {
+            log(LogLevel.INFO, "Unable to show exception to player " + sender.getUsername() + ": " + invalidCommandArg);
         }
     }
 }

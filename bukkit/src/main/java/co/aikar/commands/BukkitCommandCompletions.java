@@ -88,7 +88,7 @@ public class BukkitCommandCompletions extends CommandCompletions<BukkitCommandCo
             return matchedPlayers;
         });
 
-        setDefaultCompletion("players", OnlinePlayer.class, co.aikar.commands.contexts.OnlinePlayer.class, Player.class);
+        setDefaultCompletion("players", OnlinePlayer.class, Player.class);
         setDefaultCompletion("worlds", World.class);
     }
 
