@@ -90,7 +90,7 @@ public class CommandRouter {
             Set<RegisteredCommand> cmds = subCommands.get(subcommand);
 
             if (!cmds.isEmpty()) {
-                return new RouteSearch(cmds, Arrays.copyOfRange(args, i, argLength), commandLabel, subcommand, completion);
+                return new RouteSearch(cmds, Arrays.copyOfRange(args, i, argLength), commandLabel, subcommand);
             }
         }
 
@@ -113,12 +113,12 @@ public class CommandRouter {
                 }
             }
             if (!matchedDefault.isEmpty()) {
-                return new RouteSearch(matchedDefault, args, commandLabel, null, completion);
+                return new RouteSearch(matchedDefault, args, commandLabel, null);
             }
         }
 
         if (!unknownCommands.isEmpty()) {
-            return new RouteSearch(unknownCommands, args, commandLabel, null, completion);
+            return new RouteSearch(unknownCommands, args, commandLabel, null);
         }
 
         return null;
@@ -164,7 +164,7 @@ public class CommandRouter {
         final String commandLabel;
         final String subcommand;
 
-        RouteSearch(Set<RegisteredCommand> commands, String[] args, String commandLabel, String subcommand, boolean completion) {
+        public RouteSearch(Set<RegisteredCommand> commands, String[] args, String commandLabel, String subcommand) {
             this.commands = commands;
             this.args = args;
             this.commandLabel = commandLabel.toLowerCase(Locale.ENGLISH);
