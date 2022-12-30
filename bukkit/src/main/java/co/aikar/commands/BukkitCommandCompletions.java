@@ -24,10 +24,11 @@
 package co.aikar.commands;
 
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -71,7 +72,6 @@ public class BukkitCommandCompletions extends CommandCompletions<BukkitCommandCo
 
         registerCompletion("players", c -> {
             CommandSender sender = c.getSender();
-            Validate.notNull(sender, "Sender cannot be null");
 
             Player senderPlayer = sender instanceof Player ? (Player) sender : null;
 
@@ -87,7 +87,9 @@ public class BukkitCommandCompletions extends CommandCompletions<BukkitCommandCo
             matchedPlayers.sort(String.CASE_INSENSITIVE_ORDER);
             return matchedPlayers;
         });
+        registerCompletion("materials", c -> Arrays.stream(Material.values()).map(Material::getKey).map(NamespacedKey::getKey).toList());
 
+        setDefaultCompletion("materials", Material.class);
         setDefaultCompletion("players", OnlinePlayer.class, Player.class);
         setDefaultCompletion("worlds", World.class);
     }

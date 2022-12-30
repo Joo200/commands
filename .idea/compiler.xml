@@ -8,9 +8,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="acf-sponge" />
-        <module name="acf-velocity" />
-        <module name="acf-core" />
-        <module name="acf-bukkit" />
         <module name="acf-bungee" />
       </profile>
     </annotationProcessing>
