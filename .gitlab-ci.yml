@@ -1,0 +1,8 @@
+include:
+  - project: 'Development/Infrastructure/cicd-templates'
+    ref: 'master'
+    file: 'includes/gradle-plugin-default.yml'
+
+
+variables:
+  PUBLISH_TASK: artifactoryPublish
