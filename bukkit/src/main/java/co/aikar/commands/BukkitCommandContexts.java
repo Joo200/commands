@@ -28,6 +28,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -78,19 +79,21 @@ public class BukkitCommandContexts extends CommandContexts<BukkitCommandExecutio
             }
             return players.toArray(new OnlinePlayer[players.size()]);
         });
-        registerIssuerAwareContext(World.class, (c) -> {
-            String firstArg = c.getFirstArg();
+        registerContext(World.class, (c) -> {
+            String firstArg = c.popFirstArg();
             World world = firstArg != null ? Bukkit.getWorld(firstArg) : null;
-            if (world != null) {
-                c.popFirstArg();
-            }
-            if (world == null && c.getSender() instanceof Player) {
-                world = ((Entity) c.getSender()).getWorld();
-            }
             if (world == null) {
                 throw new InvalidCommandArgument(MinecraftMessageKeys.INVALID_WORLD);
             }
             return world;
+        });
+        registerContext(Material.class, (c) -> {
+            String firstArg = c.popFirstArg();
+            Material material = firstArg != null ? Material.matchMaterial(firstArg) : null;
+            if (material == null) {
+                throw new InvalidCommandArgument(MinecraftMessageKeys.INVALID_MATERIAL);
+            }
+            return material;
         });
         registerIssuerOnlyContext(CommandSender.class, BukkitCommandExecutionContext::getSender);
         registerIssuerOnlyContext(Player.class, (c) -> {
