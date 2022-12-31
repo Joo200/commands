@@ -33,12 +33,12 @@ description = "ACF (Core)"
 dependencies {
     api("co.aikar:Table:1.0.0-SNAPSHOT")
     api("co.aikar:locales:1.0-SNAPSHOT")
-    api("net.jodah:expiringmap:0.5.9")
+    api("net.jodah:expiringmap:0.5.10")
     implementation("org.jetbrains:annotations:23.1.0")
 
     implementation("co.aikar:Table:1.0.0-SNAPSHOT")
     implementation("co.aikar:locales:1.0-SNAPSHOT")
-    implementation("net.jodah:expiringmap:0.5.9")
+    implementation("net.jodah:expiringmap:0.5.10")
 
     api("net.kyori:adventure-text-minimessage:${Versions.ADVENTURE}")
     api("net.kyori:adventure-api:${Versions.ADVENTURE}")
