@@ -7,3 +7,19 @@ include:
   - project: 'RootServer/cicd-templates'
     ref: '1.1.0-98'
     file: 'includes/default.yml'
+
+# disable markdown-lint, yaml-lint and shellcheck
+markdown-lint:
+  rules:
+    - exists:
+        - a-file-that-will-never-exist.txt
+
+yaml-lint:
+  rules:
+    - exists:
+        - a-file-that-will-never-exist.txt
+
+shellcheck:
+  rules:
+    - exists:
+        - a-file-that-will-never-exist.txt
