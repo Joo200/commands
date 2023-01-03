@@ -5,7 +5,7 @@ variables:
 
 include:
   - project: 'RootServer/cicd-templates'
-    ref: '1.1.0-98'
+    ref: '1.2.2-110'
     file: 'includes/default.yml'
 
 # disable markdown-lint, yaml-lint and shellcheck
