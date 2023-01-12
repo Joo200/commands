@@ -34,7 +34,7 @@ dependencies {
     api("co.aikar:Table:1.0.0-SNAPSHOT")
     api("co.aikar:locales:1.0-SNAPSHOT")
     api("net.jodah:expiringmap:0.5.10")
-    implementation("org.jetbrains:annotations:23.1.0")
+    implementation("org.jetbrains:annotations:24.0.0")
 
     implementation("co.aikar:Table:1.0.0-SNAPSHOT")
     implementation("co.aikar:locales:1.0-SNAPSHOT")
