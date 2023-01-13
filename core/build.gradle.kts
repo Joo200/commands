@@ -40,8 +40,11 @@ dependencies {
     implementation("co.aikar:locales:1.0-SNAPSHOT")
     implementation("net.jodah:expiringmap:0.5.10")
 
-    api("net.kyori:adventure-text-minimessage:${Versions.ADVENTURE}")
-    api("net.kyori:adventure-api:${Versions.ADVENTURE}")
+    compileOnly("net.kyori:adventure-text-minimessage:${Versions.ADVENTURE}")
+    compileOnly("net.kyori:adventure-api:${Versions.ADVENTURE}")
+
+    testImplementation("net.kyori:adventure-text-minimessage:${Versions.ADVENTURE}")
+    testImplementation("net.kyori:adventure-api:${Versions.ADVENTURE}")
 
 }
 
