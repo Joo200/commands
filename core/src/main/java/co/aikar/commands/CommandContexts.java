@@ -38,6 +38,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @SuppressWarnings("WeakerAccess")
 public class CommandContexts<R extends CommandExecutionContext> {
@@ -210,6 +211,13 @@ public class CommandContexts<R extends CommandExecutionContext> {
             String[] result = args.toArray(new String[0]);
             args.clear();
             return result;
+        });
+        registerContext(UUID.class, (c) -> {
+            try {
+                return UUID.fromString(c.popFirstArg());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException();
+            }
         });
 
         registerContext(Enum.class, (c) -> {
