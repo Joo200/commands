@@ -86,10 +86,16 @@ public class ACFBrigadierManager<S> {
         LiteralArgumentBuilder<S> rootBuilder = LiteralArgumentBuilder.<S>literal(root.getLiteral())
                 .requires(sender -> permCheckerRoot.test(rootCommand, sender));
 
+        RegisteredCommand defaultCommand = rootCommand.getDefaultRegisteredCommand();
+        if (defaultCommand != null) {
+            if (defaultCommand.requiredResolvers == 0) {
+                rootBuilder.executes(executor);
+            }
+        }
+
         root = rootBuilder.build();
         boolean isForwardingCommand = rootCommand.getDefCommand() instanceof ForwardingCommand;
 
-        RegisteredCommand defaultCommand = rootCommand.getDefaultRegisteredCommand();
         if (defaultCommand != null) {
             registerParameters(defaultCommand, root, suggestionProvider, executor, permCheckerSub);
         }
@@ -126,8 +132,8 @@ public class ACFBrigadierManager<S> {
                     LiteralArgumentBuilder<S> argumentBuilder = LiteralArgumentBuilder.<S>literal(commandName)
                             .requires(subPermChecker);
 
-                    // if we have no params, this command is actually executable
-                    if (subCommand.getValue().consumeInputResolvers == 0) {
+                    // if we have no required params, this command is actually executable
+                    if (subCommand.getValue().requiredResolvers == 0) {
                         argumentBuilder.executes(executor);
                     }
                     subCommandNode = argumentBuilder.build();
@@ -162,7 +168,7 @@ public class ACFBrigadierManager<S> {
                     .suggests(suggestionProvider)
                     .requires(sender -> permChecker.test(command, sender));
 
-            if (nextParam != null && nextParam.canExecuteWithoutInput()) {
+            if (nextParam == null || nextParam.canExecuteWithoutInput()) {
                 builder.executes(executor);
             }
 

@@ -24,7 +24,6 @@
 package co.aikar.commands;
 
 import co.aikar.commands.apachecommonslang.ApacheCommonsExceptionUtil;
-import co.aikar.timings.lib.MCTiming;
 import co.aikar.timings.lib.TimingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -39,6 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.help.GenericCommandHelpTopic;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -73,6 +73,7 @@ public class BukkitCommandManager extends CommandManager<
     @SuppressWarnings("WeakerAccess")
     protected final Plugin plugin;
     private final CommandMap commandMap;
+    @Deprecated
     private final TimingManager timingManager;
     private final BukkitTask localeTask;
     private final Logger logger;
@@ -82,7 +83,6 @@ public class BukkitCommandManager extends CommandManager<
     protected Map<String, BukkitRootCommand> registeredCommands = new HashMap<>();
     protected BukkitCommandContexts contexts;
     protected BukkitCommandCompletions completions;
-    MCTiming commandTiming;
     protected BukkitLocales locales;
     protected Map<UUID, String> issuersLocaleString = new ConcurrentHashMap<>();
     private boolean cantReadLocale = false;
@@ -93,7 +93,6 @@ public class BukkitCommandManager extends CommandManager<
         String prefix = this.plugin.getDescription().getPrefix();
         this.logger = Logger.getLogger(prefix != null ? prefix : this.plugin.getName());
         this.timingManager = TimingManager.of(plugin);
-        this.commandTiming = this.timingManager.of("Commands");
         this.commandMap = hookCommandMap();
         Pattern versionPattern = Pattern.compile("\\(MC: (\\d)\\.(\\d+)\\.?(\\d+?)?\\)");
         Matcher matcher = versionPattern.matcher(Bukkit.getVersion());
@@ -126,6 +125,7 @@ public class BukkitCommandManager extends CommandManager<
         registerDependency(BukkitScheduler.class, Bukkit.getScheduler());
         registerDependency(ScoreboardManager.class, Bukkit.getScoreboardManager());
         registerDependency(ItemFactory.class, Bukkit.getItemFactory());
+        registerDependency(PluginDescriptionFile.class, plugin.getDescription());
     }
 
     @NotNull
@@ -321,6 +321,7 @@ public class BukkitCommandManager extends CommandManager<
         }
     }
 
+    @Deprecated
     public TimingManager getTimings() {
         return timingManager;
     }

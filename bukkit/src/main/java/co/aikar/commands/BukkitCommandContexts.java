@@ -143,12 +143,12 @@ public class BukkitCommandContexts extends CommandContexts<BukkitCommandExecutio
                 }
                 offlinePlayer = Bukkit.getOfflinePlayer(uuid);
             } else {
-                if (!isValidName(name)) {
-                    throw new InvalidCommandArgument(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, Placeholder.parsed("name", name));
-                }
                 offlinePlayer = Bukkit.getOfflinePlayer(name);
             }
             if (offlinePlayer == null || (!offlinePlayer.hasPlayedBefore() && !offlinePlayer.isOnline())) {
+                if (!c.hasFlag("uuid") && !isValidName(name)) {
+                    throw new InvalidCommandArgument(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, Placeholder.parsed("search", name));
+                }
                 throw new InvalidCommandArgument(MinecraftMessageKeys.NO_PLAYER_FOUND_OFFLINE,
                         Placeholder.parsed("search", name));
             }
@@ -211,9 +211,9 @@ public class BukkitCommandContexts extends CommandContexts<BukkitCommandExecutio
                 throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_PLEASE_SPECIFY_XYZ);
             }
 
-            Double x = ACFUtil.parseDouble(split[0]);
-            Double y = ACFUtil.parseDouble(split[1]);
-            Double z = ACFUtil.parseDouble(split[2]);
+            Double x = ACFUtil.parseDouble(split[0], rel ? 0.0D : null);
+            Double y = ACFUtil.parseDouble(split[1], rel ? 0.0D : null);
+            Double z = ACFUtil.parseDouble(split[2], rel ? 0.0D : null);
 
             if (sourceLoc != null && rel) {
                 x += sourceLoc.getX();

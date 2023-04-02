@@ -22,10 +22,6 @@ public class ACFVelocityUtil {
 
     public static Player findPlayerSmart(ProxyServer server, CommandIssuer issuer, String search) {
         String name = ACFUtil.replace(search, ":confirm", "");
-        if (!isValidName(name)) {
-            issuer.sendError(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, Placeholder.parsed("name", name));
-            return null;
-        }
 
         List<Player> matches = new ArrayList<>(matchPlayer(server, name));
 
@@ -37,6 +33,10 @@ public class ACFVelocityUtil {
         }
 
         if (matches.isEmpty()) {
+            if (!isValidName(name)) {
+                issuer.sendError(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, Placeholder.parsed("search", name));
+                return null;
+            }
             issuer.sendError(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, Placeholder.parsed("search", name));
             return null;
         }
