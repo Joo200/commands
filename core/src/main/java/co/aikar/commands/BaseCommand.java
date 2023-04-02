@@ -24,7 +24,6 @@
 package co.aikar.commands;
 
 import co.aikar.commands.CommandRouter.RouteSearch;
-import co.aikar.commands.annotation.CatchAll;
 import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
@@ -34,7 +33,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.PreCommand;
 import co.aikar.commands.annotation.Subcommand;
-import co.aikar.commands.annotation.UnknownHandler;
 import co.aikar.commands.apachecommonslang.ApacheCommonsLangUtil;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -347,9 +345,7 @@ public abstract class BaseCommand {
             }
 
             boolean preCommand = annotations.hasAnnotation(method, PreCommand.class);
-            boolean hasCatchUnknown = annotations.hasAnnotation(method, CatchUnknown.class) ||
-                    annotations.hasAnnotation(method, CatchAll.class) ||
-                    annotations.hasAnnotation(method, UnknownHandler.class);
+            boolean hasCatchUnknown = annotations.hasAnnotation(method, CatchUnknown.class);
 
             if (hasCatchUnknown || (!foundCatchUnknown && helpCommand != null)) {
                 if (!foundCatchUnknown) {
