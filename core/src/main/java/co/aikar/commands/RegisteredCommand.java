@@ -31,6 +31,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpSearchTags;
 import co.aikar.commands.annotation.Private;
 import co.aikar.commands.annotation.Syntax;
+import co.aikar.commands.annotation.Unregistered;
 import co.aikar.commands.contexts.ContextResolver;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.jetbrains.annotations.Nullable;
@@ -72,6 +73,10 @@ public class RegisteredCommand<CEC extends CommandExecutionContext> {
     public String helpSearchTags;
 
     boolean isPrivate;
+    /**
+     * Allow unregistered to execute this command
+     */
+    boolean allowUnregistered;
 
     final int requiredResolvers;
     final int consumeInputResolvers;
@@ -105,6 +110,7 @@ public class RegisteredCommand<CEC extends CommandExecutionContext> {
         this.parameters = new CommandParameter[parameters.length];
 
         this.isPrivate = annotations.hasAnnotation(method, Private.class) || annotations.getAnnotationFromClass(scope.getClass(), Private.class) != null;
+        this.allowUnregistered = annotations.hasAnnotation(method, Unregistered.class) || annotations.getAnnotationFromClass(scope.getClass(), Unregistered.class) != null;
 
         int requiredResolvers = 0;
         int consumeInputResolvers = 0;
@@ -311,6 +317,9 @@ public class RegisteredCommand<CEC extends CommandExecutionContext> {
     void computePermissions() {
         this.permissions.clear();
         this.permissions.addAll(this.scope.getRequiredPermissions());
+        if (!allowUnregistered) {
+            this.permissions.add(BaseCommand.REGISTERED_PERMISSION);
+        }
         if (this.permission != null && !this.permission.isEmpty()) {
             this.permissions.addAll(Arrays.asList(ACFPatterns.COMMA.split(this.permission)));
         }

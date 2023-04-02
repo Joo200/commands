@@ -71,6 +71,7 @@ import java.util.stream.Stream;
  */
 
 public abstract class BaseCommand {
+    public static final String REGISTERED_PERMISSION = "player.registered";
 
     /**
      * This is a field which contains the magic key in the {@link #subCommands} map for the method to catch any unknown
